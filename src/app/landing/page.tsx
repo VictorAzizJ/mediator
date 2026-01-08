@@ -26,10 +26,10 @@ export default function LandingPage() {
               <a href="#security" className="text-sm" style={{ color: 'var(--color-calm-600)' }}>Security</a>
             </div>
             <div className="flex items-center gap-3">
-              <Link href="/demo" className="text-sm px-4 py-2 rounded-lg" style={{ color: 'var(--color-calm-600)' }}>
+              <Link href="/" className="text-sm px-4 py-2 rounded-lg" style={{ color: 'var(--color-calm-600)' }}>
                 Sign In
               </Link>
-              <Link href="/demo" className="btn-primary text-sm">
+              <Link href="/" className="btn-primary text-sm">
                 Try Free
               </Link>
             </div>
@@ -54,7 +54,7 @@ export default function LandingPage() {
               Turn workplace tension into team alignment.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link href="/demo" className="btn-primary px-8 py-3 text-lg">
+              <Link href="/" className="btn-primary px-8 py-3 text-lg">
                 Start Free Session
               </Link>
               <button className="btn-secondary px-8 py-3 text-lg flex items-center gap-2">
@@ -219,7 +219,7 @@ export default function LandingPage() {
               <p className="text-lg mb-6" style={{ color: 'var(--color-calm-500)' }}>
                 Most managers avoid difficult conversations. Mediator gives you the structure to have them well—and build stronger relationships in the process.
               </p>
-              <Link href="/demo" className="btn-primary">
+              <Link href="/" className="btn-primary">
                 Explore Manager Templates
               </Link>
             </div>
@@ -260,14 +260,14 @@ export default function LandingPage() {
 
           {/* Feature grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <SmallFeature icon="transcription" title="Real-time Transcript" />
-            <SmallFeature icon="trigger" title="Trigger Detection" />
-            <SmallFeature icon="analytics" title="Speaking Analytics" />
-            <SmallFeature icon="pdf" title="PDF Export" />
-            <SmallFeature icon="observer" title="Observer Mode" />
-            <SmallFeature icon="templates" title="10+ Templates" />
-            <SmallFeature icon="breathing" title="Breathing Exercises" />
-            <SmallFeature icon="privacy" title="Privacy-First" />
+            <SmallFeature icon="🎙️" title="Real-time Transcript" />
+            <SmallFeature icon="⚡" title="Trigger Detection" />
+            <SmallFeature icon="📊" title="Speaking Analytics" />
+            <SmallFeature icon="📄" title="PDF Export" />
+            <SmallFeature icon="👀" title="Observer Mode" />
+            <SmallFeature icon="📋" title="10+ Templates" />
+            <SmallFeature icon="🧘" title="Breathing Exercises" />
+            <SmallFeature icon="🔒" title="Privacy-First" />
           </div>
         </div>
       </section>
@@ -286,17 +286,17 @@ export default function LandingPage() {
 
           <div className="grid md:grid-cols-3 gap-8">
             <SecurityCard
-              icon="encryption"
+              icon="🔒"
               title="End-to-End Encryption"
               description="Conversations encrypted at rest and in transit. Your data stays your data."
             />
             <SecurityCard
-              icon="compliance"
+              icon="🛡️"
               title="GDPR & HIPAA Ready"
               description="Compliance-ready architecture with data residency options."
             />
             <SecurityCard
-              icon="audit"
+              icon="📋"
               title="Audit Logging"
               description="Complete audit trail for compliance and accountability."
             />
@@ -304,10 +304,10 @@ export default function LandingPage() {
 
           <div className="mt-12 text-center">
             <div className="inline-flex flex-wrap justify-center gap-4 text-sm" style={{ color: 'var(--color-calm-500)' }}>
-              <span>No conversation data used for AI training</span>
-              <span>User-controlled data retention</span>
-              <span>SOC 2 Type II compliance (in progress)</span>
-              <span>Optional on-premise deployment</span>
+              <span>• No conversation data used for AI training</span>
+              <span>• User-controlled data retention</span>
+              <span>• SOC 2 Type II compliance (in progress)</span>
+              <span>• Optional on-premise deployment</span>
             </div>
           </div>
         </div>
@@ -337,7 +337,7 @@ export default function LandingPage() {
                 'Session recovery',
               ]}
               cta="Get Started"
-              ctaLink="/demo"
+              ctaLink="/"
             />
             <PricingCard
               name="Team"
@@ -353,7 +353,7 @@ export default function LandingPage() {
                 'Priority support',
               ]}
               cta="Start Trial"
-              ctaLink="/demo"
+              ctaLink="/"
               highlighted
             />
             <PricingCard
@@ -385,12 +385,12 @@ export default function LandingPage() {
             Join hundreds of teams having better conversations.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/demo" className="btn-primary px-8 py-3 text-lg">
+            <Link href="/" className="btn-primary px-8 py-3 text-lg">
               Try Free Session
             </Link>
-            <Link href="/demo" className="btn-secondary px-8 py-3 text-lg">
+            <button className="btn-secondary px-8 py-3 text-lg">
               Book a Demo
-            </Link>
+            </button>
           </div>
           <p className="mt-6 text-sm" style={{ color: 'var(--color-calm-400)' }}>
             Questions? <a href="mailto:hello@mediator.app" className="underline">hello@mediator.app</a>
@@ -458,18 +458,14 @@ function ProductPreview() {
       <div className="flex gap-4 justify-center">
         <div className="w-24 text-center">
           <div className="w-16 h-16 rounded-full mx-auto mb-2 flex items-center justify-center text-2xl" style={{ backgroundColor: 'var(--color-calm-100)' }}>
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="var(--color-calm-600)">
-              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-            </svg>
+            👤
           </div>
           <p className="text-sm font-medium" style={{ color: 'var(--foreground)' }}>Alex</p>
           <p className="text-xs" style={{ color: 'var(--color-calm-500)' }}>Speaking</p>
         </div>
         <div className="w-24 text-center opacity-60">
           <div className="w-16 h-16 rounded-full mx-auto mb-2 flex items-center justify-center text-2xl" style={{ backgroundColor: 'var(--color-calm-50)' }}>
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="var(--color-calm-400)">
-              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-            </svg>
+            👤
           </div>
           <p className="text-sm font-medium" style={{ color: 'var(--foreground)' }}>Jordan</p>
           <p className="text-xs" style={{ color: 'var(--color-calm-500)' }}>Listening</p>
@@ -569,84 +565,19 @@ function StepCard({ number, title, description }: { number: string; title: strin
 }
 
 function SmallFeature({ icon, title }: { icon: string; title: string }) {
-  const iconMap: Record<string, React.ReactNode> = {
-    transcription: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--color-calm-600)">
-        <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/>
-      </svg>
-    ),
-    trigger: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--color-calm-600)">
-        <path d="M7 2v11h3v9l7-12h-4l4-8z"/>
-      </svg>
-    ),
-    analytics: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--color-calm-600)">
-        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
-      </svg>
-    ),
-    pdf: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--color-calm-600)">
-        <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
-      </svg>
-    ),
-    observer: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--color-calm-600)">
-        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
-      </svg>
-    ),
-    templates: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--color-calm-600)">
-        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
-      </svg>
-    ),
-    breathing: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--color-calm-600)">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-      </svg>
-    ),
-    privacy: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--color-calm-600)">
-        <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
-      </svg>
-    ),
-  };
-
   return (
     <div className="p-4 rounded-xl text-center" style={{ backgroundColor: 'white' }}>
-      <div className="flex justify-center mb-2">
-        {iconMap[icon] || <span className="text-2xl">{icon}</span>}
-      </div>
-      <p className="text-sm" style={{ color: 'var(--foreground)' }}>{title}</p>
+      <span className="text-2xl">{icon}</span>
+      <p className="text-sm mt-2" style={{ color: 'var(--foreground)' }}>{title}</p>
     </div>
   );
 }
 
 function SecurityCard({ icon, title, description }: { icon: string; title: string; description: string }) {
-  const iconMap: Record<string, React.ReactNode> = {
-    encryption: (
-      <svg width="48" height="48" viewBox="0 0 24 24" fill="var(--color-calm-600)">
-        <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
-      </svg>
-    ),
-    compliance: (
-      <svg width="48" height="48" viewBox="0 0 24 24" fill="var(--color-calm-600)">
-        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
-      </svg>
-    ),
-    audit: (
-      <svg width="48" height="48" viewBox="0 0 24 24" fill="var(--color-calm-600)">
-        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
-      </svg>
-    ),
-  };
-
   return (
     <div className="card text-center">
-      <div className="flex justify-center mb-4">
-        {iconMap[icon] || <span className="text-4xl">{icon}</span>}
-      </div>
-      <h3 className="text-lg font-semibold mb-2" style={{ color: 'var(--foreground)' }}>{title}</h3>
+      <span className="text-4xl">{icon}</span>
+      <h3 className="text-lg font-semibold mt-4 mb-2" style={{ color: 'var(--foreground)' }}>{title}</h3>
       <p className="text-sm" style={{ color: 'var(--color-calm-500)' }}>{description}</p>
     </div>
   );

@@ -1,30 +1,94 @@
 # Mediator MVP Roadmap
 
 > Generated from CTO Agent + Product Designer Agent collaborative analysis
+> Updated: January 2025 — v0 Production Release
+
+---
+
+## v0 Release (January 2025)
+
+### What's New in v0
+
+| Feature | Status | Description |
+|---------|--------|-------------|
+| **Real-Time Transcription** | ✅ Complete | Deepgram Nova-2 with speaker diarization |
+| **Conversation Health Analytics** | ✅ Complete | Balance, regulation, engagement, safety scores |
+| **User Analytics Dashboard** | ✅ Complete | Personal trends and coaching insights |
+| **Enterprise Landing Page** | ✅ Complete | Full marketing page for B2B customers |
+| **Transcription UI** | ✅ Complete | Color-coded speaker turns, interim results |
+| **Analytics Library** | ✅ Complete | Metrics calculation and health scoring |
+
+### v0 Files Added
+
+| File | Purpose |
+|------|---------|
+| `src/lib/deepgram.ts` | Deepgram WebSocket client for transcription |
+| `src/lib/analytics.ts` | Health scoring and metrics calculations |
+| `src/hooks/useTranscription.ts` | React hook for transcription |
+| `src/components/transcription/` | Transcription UI components |
+| `src/components/analytics/` | Dashboard, charts, insights |
+| `src/app/page.tsx` | Enterprise landing page (main route) |
+| `src/app/demo/page.tsx` | Code-protected conversation app |
+| `src/app/api/transcription/token/route.ts` | Deepgram API key endpoint |
+| `V0-IMPLEMENTATION-PLAN.md` | Detailed v0 specifications |
+
+### v0 Route Structure
+
+| Route | Purpose |
+|-------|---------|
+| `/` | Enterprise marketing landing page |
+| `/demo` | Full conversation app (access code: `MEDIATOR2025`) |
+| `/admin` | Admin dashboard |
+| `/observer` | Observer join page |
+
+### v0 Environment Variables
+
+```env
+# New for v0
+DEEPGRAM_API_KEY=your_deepgram_key  # For real-time transcription
+DATABASE_URL=postgresql://...        # For analytics storage (optional)
+```
+
+### v0 Third-Party Integrations
+
+| Service | Purpose | Pricing |
+|---------|---------|---------|
+| **Deepgram** | Real-time transcription + diarization | $0.0043/min (Nova-2) |
+| **PostgreSQL** | Analytics storage | Self-hosted or managed |
+| **Redis** | Session storage | Self-hosted or managed |
 
 ---
 
 ## Executive Summary
 
-**Current State:** 70% demo-ready, 40% production-ready
+**Current State:** 75% demo-ready, 50% production-ready
+
+**Strategic Direction (Jan 2025):**
+- **B2C remains free** — Family conversation tools stay accessible
+- **B2B is the priority** — HR teams, manager 1-on-1s, conflict resolution
+- Mentor feedback: Focus go-to-market on enterprise while keeping B2C stable
 
 **Core Strengths:**
 - Clean, maintainable codebase with strong TypeScript types
 - Trauma-informed UX with graduated disclosure flow
 - Thoughtful AI integration with local fallbacks
 - Turn-based structure reduces conversation chaos
+- **Configurable settings** — Turn duration, round limits, breathing skip (Jan 2025)
 
 **Critical Gaps:**
 - ~~No persistent session storage (in-memory only)~~ Fixed 2024-12-18
 - Missing privacy/consent flows
 - ~~Security vulnerabilities in session management~~ Fixed 2024-12-18
 - AI involvement hidden from users
+- No observer mode for B2B use cases
 
-**Upcoming Features (Designed):**
-- Licensed Therapist/Advisor Integration with HIPAA compliance
-- Self-Awareness Conversation Analysis (private nudges, word/volume tracking)
+**Upcoming Features:**
+- **Priority 7 (NEW):** B2B MVP — Observer mode, admin dashboard, compliance logging
+- Priority 5-6: Therapist integration and self-awareness (may evolve for B2B workplace counselors)
 
-**Target Positioning:** "The Signal of family conversations" - ephemeral, private, transparent
+**Target Positioning:**
+- B2C: "The Signal of family conversations" — ephemeral, private, transparent
+- B2B: "Psychological safety infrastructure for HR teams" — structured, compliant, measurable
 
 ---
 
@@ -96,9 +160,9 @@ Required for a trustworthy beta experience with 50-100 users.
 ### 2.4 Incomplete Features
 | Item | Owner | File(s) | Status |
 |------|-------|---------|--------|
-| Implement "I need to stop this conversation" button | CTO | `ActiveConversation.tsx:166-172` | [ ] |
+| Implement "I need to stop this conversation" button | CTO | `ActiveConversation.tsx:166-172` | [x] Done 2025-01-04 |
 | Design confirmation modal for emergency exit | Designer | New component | [ ] |
-| Notify other participant when someone exits | CTO | `server.js` | [ ] |
+| Notify other participant when someone exits | CTO | `server.js` | [x] Done 2025-01-04 |
 
 ---
 
@@ -165,9 +229,193 @@ Nice-to-haves that improve the experience but don't block launch.
 ### 4.3 Extended Features
 | Item | Owner | Status |
 |------|-------|--------|
-| Configurable turn duration (currently fixed at 90s) | Designer/CTO | [ ] |
+| Configurable turn duration (currently fixed at 90s) | Designer/CTO | [x] Done 2025-01-04 |
+| Configurable round limits (unlimited/3/5) | Designer/CTO | [x] Done 2025-01-04 |
+| Breathing exercise skip option | Designer/CTO | [x] Done 2025-01-04 |
+| End conversation button | CTO | [x] Done 2025-01-04 |
 | Calendar integration for follow-up reminders | CTO | [ ] |
 | End-to-end encryption (Signal Protocol) | CTO | [ ] |
+
+---
+
+## Priority 7: B2B Enterprise Features (NEW — Jan 2025)
+
+> **Strategic Priority:** This is now the primary development focus.
+> B2C features (Priority 5-6) remain on roadmap but may evolve into B2B workplace counselor/ombuds roles.
+
+### Why B2B?
+
+| Reason | Details |
+|--------|---------|
+| Clear buyer persona | HR leaders have budget and pain points |
+| Recurring revenue | Per-seat or per-org pricing |
+| Differentiation | Trauma-informed design is rare in workplace tools |
+| Existing foundation | Turn-taking, volume monitoring, summaries all transfer |
+
+### B2B Use Cases
+
+| Use Case | Description | Target Buyer |
+|----------|-------------|--------------|
+| Manager 1-on-1s | Emotionally safe check-ins with reflection | HR Leaders, L&D |
+| Conflict Retros | Post-incident debriefs with HR observation | HR, Employee Relations |
+| Team Retros | Psychological safety tracking across sprints | Engineering Managers |
+
+---
+
+### 7.1 MVP B2B Features (Weeks 1-4 — January 2025)
+
+| Item | Owner | Effort | Status |
+|------|-------|--------|--------|
+| Manager check-in template (pre-built prompts) | Designer/CTO | 2 days | [ ] |
+| Basic observer mode (read-only, consent-based) | CTO | 3 days | [ ] |
+| PDF summary export | CTO | 2 days | [ ] |
+| Speaking time tracking (% split) | CTO | 1 day | [ ] |
+| Workplace tone prompts (professional language) | Designer | 2 days | [ ] |
+| Simple admin dashboard (active sessions, stats) | CTO | 3 days | [ ] |
+| Basic audit logging (who did what, when) | CTO | 2 days | [ ] |
+
+**Total Estimated Effort:** ~15 days (~3 weeks)
+
+**Exit Criteria:**
+- [ ] HR pilot user can create and observe a conflict retro
+- [ ] Manager can run a 1-on-1 with check-in template
+- [ ] PDF export works for all session types
+- [ ] Audit log captures all observer actions
+
+---
+
+### 7.2 Enterprise Features (Months 2-3 — Feb-Mar 2025)
+
+| Item | Owner | Effort | Dependencies | Status |
+|------|-------|--------|--------------|--------|
+| Conflict retro full flow | Designer/CTO | 2 weeks | Observer mode | [ ] |
+| Trust ledger (private safety event log) | CTO | 1 week | Audit logging | [ ] |
+| Meeting health dashboard (org trends) | Designer/CTO | 2 weeks | Analytics infra | [ ] |
+| RBAC system (Employee/Manager/HR/Admin) | CTO | 1 week | User model | [ ] |
+| SSO integration (SAML 2.0 / OIDC) | CTO | 2 weeks | Enterprise customer | [ ] |
+| Anonymized pause requests in reports | CTO | 3 days | Trust ledger | [ ] |
+
+---
+
+### 7.3 Future B2B (Q2 2025+)
+
+| Item | Trigger | Status |
+|------|---------|--------|
+| Multi-party sessions (3+ participants) | Team retro demand | [ ] |
+| Calendar integration (Google, Outlook) | Enterprise request | [ ] |
+| Slack/Teams integration | Enterprise request | [ ] |
+| SOC-2 Type II certification | Enterprise requirement | [ ] |
+| Custom branding / white-labeling | Enterprise request | [ ] |
+| On-premises deployment option | Regulated industries | [ ] |
+
+---
+
+### 7.4 B2B Database Schema Additions
+
+```sql
+-- Observer relationships (HR watching sessions)
+CREATE TABLE session_observers (
+  id UUID PRIMARY KEY,
+  session_id UUID NOT NULL,
+  observer_id UUID NOT NULL,
+  observer_role VARCHAR(50) NOT NULL,  -- 'hr_admin', 'mediator', 'manager'
+
+  -- Permissions (consent-based)
+  can_view_transcript BOOLEAN DEFAULT false,
+  can_send_prompts BOOLEAN DEFAULT false,
+  can_pause_session BOOLEAN DEFAULT false,
+
+  consent_given_at TIMESTAMP,
+  consent_given_by UUID[],  -- Both participants must consent
+
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Basic audit log for compliance
+CREATE TABLE audit_log (
+  id UUID PRIMARY KEY,
+  actor_id UUID NOT NULL,
+  actor_role VARCHAR(50) NOT NULL,
+  action VARCHAR(100) NOT NULL,
+  target_type VARCHAR(50),
+  target_id UUID,
+  metadata JSONB,
+  ip_hash VARCHAR(64),
+  timestamp TIMESTAMP DEFAULT NOW()
+  -- No UPDATE or DELETE permissions
+);
+
+-- Check-in templates
+CREATE TABLE checkin_templates (
+  id UUID PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  description TEXT,
+  prompts JSONB NOT NULL,  -- Array of prompt objects
+  turn_duration_seconds INTEGER DEFAULT 90,
+  max_rounds INTEGER DEFAULT 4,
+  created_by UUID,
+  is_system BOOLEAN DEFAULT false,  -- Built-in templates
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Meeting health metrics (aggregated, anonymized)
+CREATE TABLE meeting_health_metrics (
+  id UUID PRIMARY KEY,
+  org_id UUID NOT NULL,
+  period_start DATE NOT NULL,
+  period_end DATE NOT NULL,
+
+  -- Aggregated stats
+  total_sessions INTEGER,
+  completion_rate DECIMAL(5,2),
+  avg_speaking_balance DECIMAL(5,2),
+  escalation_events INTEGER,
+  pause_requests INTEGER,
+
+  created_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+---
+
+### 7.5 B2B Socket Events
+
+| Event | Direction | Purpose |
+|-------|-----------|---------|
+| `observer:join` | Observer → Server | Request to observe session |
+| `observer:consent-request` | Server → Participants | Ask for consent |
+| `observer:consent-granted` | Participants → Server | Approve observer |
+| `observer:joined` | Server → All | Observer now watching |
+| `observer:prompt-send` | Observer → Participant | Send reflection prompt |
+| `observer:pause-request` | Observer → Server | Emergency pause |
+| `admin:sessions-list` | Admin → Server | Get active sessions |
+| `admin:metrics-request` | Admin → Server | Get health metrics |
+
+---
+
+### 7.6 B2B New Components
+
+| Component | Purpose | Priority |
+|-----------|---------|----------|
+| `<ObserverPanel />` | HR's view of ongoing session | High |
+| `<ConsentModal />` | Ask participants to approve observer | High |
+| `<CheckInTemplate />` | Pre-built 1-on-1 prompts | High |
+| `<AdminDashboard />` | Org-wide session overview | High |
+| `<MeetingHealthChart />` | Trend visualization | Medium |
+| `<PDFExport />` | Download summary as PDF | High |
+| `<SpeakingTimeBar />` | % split visualization | Medium |
+| `<AuditLogViewer />` | Compliance review interface | Low |
+
+---
+
+### 7.7 B2B Deployment Phases
+
+| Phase | Timeline | Who | Success Criteria |
+|-------|----------|-----|------------------|
+| Internal Testing | Week 1-2 | Your team | All flows work, 0 critical bugs |
+| Pilot HR Teams | Week 3-6 | 2-3 HR professionals | 10+ sessions facilitated, NPS > 7 |
+| Small Orgs | Week 7-12 | 2-3 companies (10-50 employees) | 15+ sessions/week, >50% retention |
+| Enterprise | Week 13-24 | 1-2 enterprises (500+ employees) | Signed contract, passed IT review |
 
 ---
 
@@ -636,17 +884,29 @@ RATE_LIMIT_MAX_REQUESTS=10
 - [x] Secure session code generation (2024-12-18)
 - [x] Input validation on all socket events (2024-12-18 - Zod schemas)
 - [x] Rate limiting on session join (2024-12-18)
+- [x] Configurable turn duration (2025-01-04)
+- [x] Configurable round limits (2025-01-04)
+- [x] End conversation button (2025-01-04)
 - [ ] Privacy consent flow complete
 - [ ] Microphone permissions screen added
 - [ ] Error boundaries in place
 - [ ] WSS/TLS configured
 
-### Beta Launch
+### B2C Beta Launch
 - [ ] 50-100 users recruited
 - [ ] Feedback collection mechanism
 - [ ] Basic analytics (drop-off points)
 - [ ] Error monitoring (Sentry or similar)
 - [ ] Support channel established
+
+### B2B MVP Launch (Priority — Jan 2025)
+- [ ] Observer mode (read-only, consent-based)
+- [ ] Manager check-in template
+- [ ] PDF summary export
+- [ ] Basic admin dashboard
+- [ ] Audit logging
+- [ ] 2-3 HR pilot users recruited
+- [ ] 10+ sessions facilitated
 
 ### Public Launch
 - [ ] All Priority 1-3 items complete
@@ -655,7 +915,7 @@ RATE_LIMIT_MAX_REQUESTS=10
 - [ ] Privacy policy published
 - [ ] Security audit completed (if budget allows)
 
-### Post-Launch (Priority 5-6)
+### Post-Launch (Priority 5-6 / B2C)
 - [ ] Self-awareness nudge system (Phase 1)
 - [ ] Private analytics infrastructure (Phase 1)
 - [ ] Therapist onboarding & verification (Phase 2)
@@ -1102,4 +1362,133 @@ socket.on('session:created', ({ sessionCode, participantId }) => {
 
 ---
 
-*Last updated: 2024-12-25*
+---
+
+### 2025-01-04: Conversation Settings & B2B Strategy
+
+#### 1. Configurable Conversation Settings
+**Roadmap Item:** 4.3 Extended Features - Configurable turn duration
+
+**Problem:**
+- Turn duration was fixed at 90 seconds
+- No way to set conversation round limits
+- Breathing exercise was mandatory
+
+**Solution Applied:**
+
+**SetupScreen.tsx:**
+- Added collapsible "Show conversation settings" panel
+- Turn duration options: 1 min, 1.5 min, 2 min
+- Round options: Unlimited, 3, 5
+- Breathing exercise toggle
+
+**server.js:**
+- Added `ConversationSettingsSchema` validation
+- Settings stored with session on creation
+- `turnTimeSeconds` uses `settings.turnDurationSeconds`
+- Max rounds check on `turn:end` — auto-ends when limit reached
+- Breathing skip: Goes directly to `active` phase if disabled
+
+**Types:**
+```typescript
+interface ConversationSettings {
+  turnDurationSeconds: number;  // 60, 90, 120
+  maxRounds: number;            // 0 = unlimited
+  enableVolumeAlerts: boolean;
+  enableBreathingExercise: boolean;
+}
+```
+
+**Files Changed:**
+- `src/components/conversation/SetupScreen.tsx` — Settings UI
+- `src/app/page.tsx` — Pass settings to createSession
+- `src/hooks/useSocket.ts` — Send/receive settings
+- `src/store/session.ts` — Store settings
+- `src/types/index.ts` — ConversationSettings type
+- `server.js` — Validate, store, and apply settings
+
+---
+
+#### 2. End Conversation Button
+**Roadmap Item:** 2.4 Incomplete Features
+
+**Problem:**
+- "I need to stop this conversation" button was non-functional
+- No way to gracefully end a conversation
+
+**Solution Applied:**
+- Added `conversation:end` socket event
+- Server transitions to `ended` phase
+- Both participants see end screen
+- "Start a New Conversation" option available
+
+---
+
+#### 3. B2B Strategy & Roadmap
+**Roadmap Item:** NEW Priority 7
+
+**Context:**
+- Mentor feedback: Prioritize B2B go-to-market
+- B2C remains free and stable
+
+**Additions:**
+- Priority 7 section with B2B MVP features
+- Use cases: Manager 1-on-1s, Conflict Retros, Team Retros
+- Database schemas for observers, audit logs, templates
+- Socket events for observer mode
+- Deployment phases with success criteria
+- Updated README with B2B vision and current status
+
+---
+
+### Next Steps (Immediate)
+
+| Priority | Action | Effort |
+|----------|--------|--------|
+| 1 | Test current features (timer, rounds, settings) | 1-2 hours |
+| 2 | Add privacy consent flow | 3-4 hours |
+| 3 | Implement WSS/TLS for production | 2-3 hours |
+| 4 | Start B2B MVP: Observer mode | 3 days |
+| 5 | Recruit 2-3 HR pilot users | Ongoing |
+
+---
+
+### 2025-01-08: Route Restructure for Demo Presentations
+
+#### Route Structure Update
+**Purpose:** Separate marketing landing from demo access for presentations
+
+**Problem:**
+- Needed enterprise landing page as main entry point
+- Full conversation app should be protected for demo presentations
+- Clear separation between marketing and product
+
+**Solution Applied:**
+
+**New Route Structure:**
+| Route | Purpose |
+|-------|---------|
+| `/` | Enterprise marketing landing page |
+| `/demo` | Code-protected conversation app (access code: `MEDIATOR2025`) |
+| `/admin` | Admin dashboard |
+| `/observer` | Observer join page |
+
+**Files Changed:**
+- `src/app/page.tsx` — Now contains enterprise landing page
+- `src/app/demo/page.tsx` — New file with access gate + full conversation flow
+- `src/app/landing/page.tsx` — Legacy (can be removed)
+
+**Demo Access Gate:**
+- Access code stored in localStorage after entry
+- Users without code see professional gate UI
+- "Request access" link points back to landing page
+- Code: `MEDIATOR2025` (configurable in demo/page.tsx)
+
+**Navigation Updates:**
+- All CTAs ("Try Free", "Start Free Session", etc.) link to `/demo`
+- Pricing cards link to `/demo`
+- "Sign In" links to `/demo`
+
+---
+
+*Last updated: 2025-01-08*

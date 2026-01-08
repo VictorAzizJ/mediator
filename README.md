@@ -1,59 +1,150 @@
 # Mediator
 
-A safe space for difficult conversations. Mediator is a web application that guides families through emotionally challenging dialogues with structure, clarity, and accountability.
+A structured conversation platform for emotionally difficult dialogues. Originally designed for families, now production-ready for enterprise teams — HR departments, managers, and workplace conflict resolution.
 
-## Current Features
+## Vision
 
-### Core Conversation Tools
-- **Structured Turn-Taking**: Clear timers and visual cues for speaking and listening turns
-- **Real-Time Volume Monitoring**: Gentle alerts when voices rise
-- **Trigger Detection**: AI-powered detection of blame language and communication patterns that escalate conflict
-- **Reflection Prompts**: Thoughtful prompts to encourage perspective-taking
-- **Breathing Exercises**: 4-7-8 breathing technique for co-regulation
-- **Conversation Summaries**: Neutral, AI-generated summaries with private notes
-- **Device Sync**: Connect two phones for in-person mediated conversations
-- **Trauma-Informed Design**: Soft colors, gentle transitions, and always-visible exit options
+**B2C (Free):** A safe space for family conversations — structured turn-taking, trigger detection, and trauma-informed design.
 
-### Security & Reliability (Implemented Dec 2024)
-- **Persistent Sessions**: Redis-backed storage with 24-hour TTL
-- **Session Reconnection**: Resume conversations after page refresh or disconnection
-- **Cryptographic Security**: Session codes and participant IDs use `crypto.randomBytes` and `crypto.randomUUID`
-- **Input Validation**: All socket events validated with Zod schemas
-- **Rate Limiting**: Protection against brute-force attacks on session join (10/min) and creation (5/min)
-- **State Injection Protection**: Whitelisted fields prevent malicious session manipulation
+**B2B (Enterprise):** Professional tools for HR teams, 1-on-1 check-ins, and conflict resolution — observer modes, compliance logging, and team health analytics.
 
-## Upcoming Features (Designed)
+> **v0 Release (Jan 2025):** Production-ready for organizations with full analytics, transcription, and enterprise landing page.
 
-### Licensed Therapist/Advisor Integration (Priority 5)
-Allow clients to invite licensed mental health professionals to observe and support their conversations:
-- **NPI Registry Verification**: Automatic license validation
-- **Granular Permissions**: All access OFF by default, client controls visibility
-- **Real-Time Observation**: Therapists can watch sessions live (with consent)
-- **Therapist Prompts**: Send reflection prompts to clients during conversation
-- **Multi-Therapist Support**: Each party can have their own therapist observing
-- **HIPAA Audit Trail**: Immutable logging of all therapist access
-- **Consent Matrix**: Partner identity requires BOTH parties' consent
+---
 
-### Self-Awareness Conversation Analysis (Priority 6)
-Private, non-punitive tools for personal communication growth:
-- **Private Analytics**: Per-participant insights never shared with partner
-- **Self-Defined Triggers**: Choose your own words and thresholds to monitor
-- **Non-Punitive Nudges**: "Your voice is getting louder. Take a breath?" (partner never sees)
-- **Anonymous Pause Requests**: "Someone requested a pause" (no attribution)
-- **Client-Side Encryption**: Sensitive trigger words encrypted locally
-- **Post-Session Dashboard**: Speaking time, volume patterns, self-awareness moments
-- **Therapist Sharing**: Optionally share insights with your support person
+## Current Status
 
-> See [ROADMAP.md](./ROADMAP.md) for full implementation details, database schemas, and socket events.
+### What's Built & Working
 
-## Tech Stack
+| Feature | Status | Last Updated |
+|---------|--------|--------------|
+| **Core Conversation** | | |
+| Turn-taking with configurable duration (60/90/120s) | ✅ Working | Jan 2025 |
+| Session creation/joining (6-char codes) | ✅ Working | Dec 2024 |
+| Real-time sync via Socket.io | ✅ Working | Dec 2024 |
+| Volume monitoring with auto-pause | ✅ Working | Dec 2024 |
+| Breathing exercise (synced, skippable) | ✅ Working | Jan 2025 |
+| Round control (unlimited/3/5) | ✅ Working | Jan 2025 |
+| End conversation button | ✅ Working | Jan 2025 |
+| **Security & Reliability** | | |
+| Redis session persistence | ✅ Working | Dec 2024 |
+| Session reconnection | ✅ Working | Dec 2024 |
+| Zod input validation | ✅ Working | Dec 2024 |
+| Rate limiting (join: 10/min, create: 5/min) | ✅ Working | Dec 2024 |
+| Secure session codes (crypto) | ✅ Working | Dec 2024 |
+| Privacy consent flow | ✅ Working | Jan 2025 |
+| Microphone permission flow | ✅ Working | Jan 2025 |
+| Error boundaries | ✅ Working | Jan 2025 |
+| **B2B Features** | | |
+| Observer mode | ✅ Working | Jan 2025 |
+| Admin dashboard | ✅ Working | Jan 2025 |
+| Check-in templates (10 workplace scenarios) | ✅ Working | Jan 2025 |
+| Speaking time tracking | ✅ Working | Jan 2025 |
+| PDF export | ✅ Working | Jan 2025 |
+| Audit logging | ✅ Working | Jan 2025 |
+| **v0 Features** | | |
+| Real-time transcription (Deepgram) | ✅ Ready | Jan 2025 |
+| Speaker diarization | ✅ Ready | Jan 2025 |
+| Conversation health analytics | ✅ Ready | Jan 2025 |
+| User analytics dashboard | ✅ Ready | Jan 2025 |
+| Enterprise landing page | ✅ Ready | Jan 2025 |
+
+---
+
+## Architecture
+
+### Tech Stack
 
 - **Frontend**: Next.js 16, React 19, TypeScript, Tailwind CSS, Framer Motion
-- **Backend**: Socket.io for real-time sync, Redis for session persistence
-- **AI**: Claude API (with local fallbacks)
+- **Backend**: Socket.io, Redis (optional fallback to in-memory)
+- **AI**: Claude API (Anthropic) with local fallbacks
+- **Transcription**: Deepgram API (Nova-2 with diarization)
 - **State**: Zustand
-- **Validation**: Zod schemas for all inputs
-- **Security**: crypto module for secure IDs, rate limiting
+- **Validation**: Zod schemas
+- **Security**: Node.js crypto module, rate limiting
+
+### System Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      CLIENT LAYER                           │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│   Next.js App                        Web Audio API          │
+│   ┌─────────────────┐               ┌─────────────────┐    │
+│   │ React Components│               │ Volume Monitor  │    │
+│   │ Zustand Store   │               │ Audio Streaming │    │
+│   │ Socket.io Client│               └────────┬────────┘    │
+│   └────────┬────────┘                        │             │
+│            │                                 │             │
+└────────────┼─────────────────────────────────┼─────────────┘
+             │                                 │
+             ▼                                 ▼
+┌─────────────────────────────────────────────────────────────┐
+│                      SERVER LAYER                           │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│   Socket.io Server          Next.js API           Deepgram  │
+│   ┌─────────────────┐      ┌───────────────┐    ┌────────┐ │
+│   │ Session Mgmt    │      │ /ai/trigger   │    │ Nova-2 │ │
+│   │ Turn Control    │      │ /ai/summarize │    │ WSS    │ │
+│   │ Audit Logging   │      │ /ai/prompt    │    └────────┘ │
+│   │ Rate Limiting   │      │ /transcription│               │
+│   └────────┬────────┘      └───────────────┘               │
+│            │                                               │
+└────────────┼───────────────────────────────────────────────┘
+             │
+             ▼
+┌─────────────────────────────────────────────────────────────┐
+│                      DATA LAYER                             │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│   Redis (Sessions)         PostgreSQL (Analytics)          │
+│   ┌─────────────────┐      ┌─────────────────┐             │
+│   │ TTL: 24 hours   │      │ Metrics         │             │
+│   │ Session State   │      │ Audit Logs      │             │
+│   │ Participant Data│      │ Team Health     │             │
+│   └─────────────────┘      └─────────────────┘             │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Key Features
+
+### Core Conversation Tools
+- **Structured Turn-Taking**: Configurable timers (60/90/120s) with visual cues
+- **Real-Time Volume Monitoring**: Gentle alerts when voices rise
+- **Trigger Detection**: AI-powered detection of blame language and escalation
+- **Reflection Prompts**: Thoughtful prompts for perspective-taking
+- **Breathing Exercises**: 4-7-8 breathing with sync (can be skipped)
+- **Conversation Summaries**: Neutral, AI-generated summaries with private notes
+
+### B2B Enterprise Features
+- **Observer Mode**: HR/coaches can observe with participant consent
+- **Check-in Templates**: 10 pre-built workplace scenarios (1-on-1s, conflict resolution, performance)
+- **Speaking Time Analytics**: Visual % split with balance tracking
+- **PDF Export**: Compliance-ready documentation
+- **Admin Dashboard**: Session management and team oversight
+- **Audit Logging**: Complete activity trail for compliance
+
+### v0 Analytics Stack
+- **Conversation Health Scoring**: Balance, regulation, engagement, safety metrics
+- **Real-Time Transcription**: Deepgram Nova-2 with speaker diarization
+- **Trend Analysis**: Track improvement over time
+- **Coaching Insights**: AI-generated personalized recommendations
+- **Role-Based Access**: Individuals see their data, managers see aggregates
+
+### Security & Privacy
+- **Redis Session Persistence**: 24-hour TTL with secure fallback
+- **Cryptographic Security**: `crypto.randomBytes` for all tokens
+- **Input Validation**: Zod schemas on all socket events
+- **Rate Limiting**: Brute-force protection
+- **Privacy Consent Flow**: GDPR-aligned opt-in
+- **Audit Trail**: Immutable logging for compliance
+
+---
 
 ## Getting Started
 
@@ -61,18 +152,15 @@ Private, non-punitive tools for personal communication growth:
 
 - Node.js 18+
 - npm or yarn
-- Redis (optional - falls back to in-memory storage)
+- Redis (optional)
 
 ### Installation
 
 ```bash
-# Install dependencies
+git clone <repo>
+cd mediator
 npm install
-
-# Copy environment variables
 cp .env.local.example .env.local
-
-# Add your Anthropic API key to .env.local (optional - local AI fallbacks work without it)
 ```
 
 ### Environment Variables
@@ -82,123 +170,169 @@ cp .env.local.example .env.local
 NEXT_PUBLIC_SOCKET_URL=http://localhost:3001
 SOCKET_PORT=3001
 
-# Optional
-ANTHROPIC_API_KEY=your_api_key_here
+# AI Features (optional but recommended)
+ANTHROPIC_API_KEY=your_anthropic_key
+
+# Transcription (optional)
+DEEPGRAM_API_KEY=your_deepgram_key
+
+# Session Storage (optional, falls back to in-memory)
 REDIS_URL=redis://localhost:6379
+
+# Production
+NEXT_PUBLIC_APP_URL=https://mediator.app
+NODE_ENV=production
 ```
 
 ### Running the App
 
 ```bash
-# Run both Next.js and Socket.io server
+# Run both servers (recommended)
 npm run dev:all
 
-# Or run separately:
-npm run dev        # Next.js on http://localhost:3000
-npm run dev:socket # Socket.io on http://localhost:3001
+# Or separately:
+npm run dev        # Next.js on :3000
+npm run dev:socket # Socket.io on :3001
 ```
 
-### Testing a Conversation
+### URLs
 
-1. Open http://localhost:3000 on two browser windows/devices
-2. On the first window, click "Start a new conversation" and enter your name
-3. Copy the 6-digit session code
-4. On the second window, click "Join an existing conversation" and enter the code
-5. Both users set their intentions and begin
+| Route | Purpose |
+|-------|---------|
+| `/` | Enterprise marketing landing page |
+| `/demo` | Full conversation app (code-protected: `MEDIATOR2025`) |
+| `/admin` | Admin dashboard |
+| `/observer` | Observer join page |
+
+---
 
 ## Project Structure
 
 ```
 src/
-├── app/                    # Next.js app directory
-│   ├── api/ai/            # Claude AI endpoints
-│   ├── globals.css        # Trauma-informed design system
-│   ├── layout.tsx         # Root layout
-│   └── page.tsx           # Main orchestrator
+├── app/                      # Next.js app directory
+│   ├── api/
+│   │   ├── ai/              # Claude AI endpoints
+│   │   └── transcription/   # Deepgram token endpoint
+│   ├── admin/               # Admin dashboard page
+│   ├── demo/                # Code-protected conversation app
+│   ├── observer/            # Observer join page
+│   └── page.tsx             # Enterprise landing page
 ├── components/
-│   ├── breathing/         # Breathing exercise component
-│   ├── conversation/      # Main conversation screens
-│   └── ui/                # Reusable UI components
-├── hooks/                 # Custom React hooks
-│   ├── useSocket.ts       # WebSocket connection
-│   ├── useVolumeMonitor.ts # Microphone volume
-│   ├── useSpeechRecognition.ts # Speech-to-text
-│   └── useAI.ts           # Claude API integration
+│   ├── admin/               # Admin dashboard components
+│   ├── analytics/           # Health scores, trends, insights
+│   ├── breathing/           # Breathing exercise
+│   ├── conversation/        # Main screens
+│   ├── observer/            # Observer mode components
+│   ├── onboarding/          # Privacy, mic permissions
+│   ├── templates/           # Check-in template selector
+│   ├── transcription/       # Real-time transcript UI
+│   └── ui/                  # Reusable components
+├── hooks/
+│   ├── useSocket.ts         # Socket.io management
+│   ├── useVolumeMonitor.ts  # Microphone volume
+│   └── useTranscription.ts  # Deepgram transcription
 ├── lib/
-│   ├── ai.ts              # AI utilities and local fallbacks
-│   └── socket.ts          # Socket.io client
+│   ├── ai.ts                # AI helpers with fallbacks
+│   ├── analytics.ts         # Metrics calculations
+│   ├── deepgram.ts          # Transcription client
+│   ├── checkInTemplates.ts  # B2B templates
+│   └── pdfExport.ts         # PDF generation
 ├── store/
-│   └── session.ts         # Zustand state management
+│   └── session.ts           # Zustand state
 └── types/
-    └── index.ts           # TypeScript types
+    └── index.ts             # TypeScript definitions
 
-server.js                  # Socket.io server with Redis, rate limiting, validation
-ROADMAP.md                 # Detailed feature roadmap and implementation log
-ROADMAP-IOS.md             # iOS native app roadmap
+server.js                    # Socket.io server
+V0-IMPLEMENTATION-PLAN.md    # Detailed v0 specs
+ROADMAP.md                   # Feature roadmap
 ```
 
-## Key Design Decisions
+---
+
+## B2B Use Cases
+
+| Use Case | Template | Target Buyer |
+|----------|----------|--------------|
+| **Weekly 1-on-1s** | `weekly-1on1` | Managers, HR |
+| **Conflict Resolution** | `conflict-resolution` | HR, Employee Relations |
+| **Performance Check-ins** | `performance-review` | Managers, HR |
+| **Stay Interviews** | `stay-interview` | HR, Retention Teams |
+| **Project Retrospectives** | `project-retro` | Engineering Managers |
+| **Feedback Exchange** | `feedback-exchange` | Teams, Peers |
+| **Career Development** | `career-development` | Managers, L&D |
+| **Onboarding Check-ins** | `onboarding-checkin` | Managers, HR |
+| **Return from Leave** | `return-from-leave` | HR, Managers |
+| **Difficult Conversations** | `difficult-conversation` | HR, Managers |
+
+---
+
+## Analytics Metrics
+
+### Conversation Health Score (0-100)
+
+| Metric | Weight | Description |
+|--------|--------|-------------|
+| Communication Balance | 25% | Equal speaking time distribution |
+| Emotional Regulation | 30% | Pause usage, trigger response |
+| Engagement Depth | 20% | Turn duration, reflection engagement |
+| Safety Indicator | 25% | Completion rate, trigger patterns |
+
+### Role-Based Access
+
+| Role | Can See |
+|------|---------|
+| **Individual** | Own metrics, own transcripts, personal trends |
+| **Manager** | Team aggregates, anonymized patterns |
+| **HR Admin** | Org-wide health, department comparisons |
+
+---
+
+## Design Principles
 
 ### Trauma-Informed UX
-- Soft color palette (no harsh reds or stark contrasts)
-- Invitational language ("Would you like to..." not "You should...")
+- Soft colors, no harsh reds
+- Invitational language ("Would you like to...")
 - Always-visible exit options
 - Reduced motion support
-- Non-punitive timer display
-- Growth-oriented framing ("Communication Coach" not surveillance)
+- Non-punitive framing
 
 ### Privacy First
-- Audio is processed in real-time and never stored
-- Transcripts exist only in memory during sessions
-- Summaries are stored locally by default
-- Private notes are never synced
-- Self-awareness nudges are private to each participant
-- Client-side encryption planned for sensitive trigger words
+- Audio processed in real-time, never stored (unless transcription enabled)
+- Private notes never synced to partner
+- Individual metrics private by default
+- Aggregation before sharing up the chain
 
-### Security
-- Cryptographically secure session codes (not guessable)
-- UUID v4 participant IDs (not forgeable)
-- Zod schema validation on all inputs
-- Rate limiting prevents brute-force attacks
-- Field whitelisting prevents state injection
-- TLS 1.3 required for production (HIPAA compliance)
+### B2B Professional Tone
+- Workplace-appropriate language
+- Consent-based observation
+- Compliance-ready logging
+- Growth-oriented analytics (not surveillance)
 
-### Graceful Degradation
-- Works without Claude API (local AI fallbacks)
-- Works without Redis (falls back to in-memory)
-- Works offline after initial load
-- Works with microphone permissions denied (manual input)
+---
 
-## Roadmap
+## Deployment Checklist
 
-| Priority | Status | Description |
-|----------|--------|-------------|
-| Priority 1 | Mostly Complete | Critical blockers (security, persistence) |
-| Priority 2 | Planned | Beta launch features (trust indicators, error handling) |
-| Priority 3 | Planned | Public launch (accessibility, localization) |
-| Priority 4 | Planned | Post-launch enhancements (advanced AI, scalability) |
-| Priority 5 | Designed | Licensed therapist/advisor integration |
-| Priority 6 | Designed | Self-awareness conversation analysis |
+### Pre-Production
+- [ ] SSL/TLS certificates configured
+- [ ] CORS restricted to production domains
+- [ ] Rate limiting tuned
+- [ ] Redis instance configured
+- [ ] Environment variables set
+- [ ] Error tracking (Sentry) configured
 
-See [ROADMAP.md](./ROADMAP.md) for the complete roadmap with:
-- Detailed task breakdowns with owners and file references
-- Database schemas (5 new tables designed)
-- Socket event specifications (16 new events)
-- UI component inventory (9 new components)
-- Implementation phases and dependencies
-- HIPAA compliance requirements
+### Production
+- [ ] Load testing completed
+- [ ] Accessibility audit passed
+- [ ] Privacy policy published
+- [ ] Terms of service published
+- [ ] Cookie consent implemented
 
-## Demo Day Tips
-
-1. **Test on two physical devices** for the most impressive demo
-2. **Pre-create a session** so you don't wait during the demo
-3. **Use the trigger detection** - say "You always..." to show the pause feature
-4. **Show the breathing exercise** - it's a crowd-pleaser
-5. **Highlight the summary** - emphasize neutral language and private notes
+---
 
 ## Contributing
 
-See [ROADMAP.md](./ROADMAP.md) for current priorities and task assignments.
+See [ROADMAP.md](./ROADMAP.md) for detailed task breakdowns and [V0-IMPLEMENTATION-PLAN.md](./V0-IMPLEMENTATION-PLAN.md) for v0 specifications.
 
 ## License
 

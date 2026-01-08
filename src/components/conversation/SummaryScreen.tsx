@@ -2,12 +2,14 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import type { ConversationSummary, Participant } from '@/types';
+import type { ConversationSummary, Participant, SpeakingTimeRecord } from '@/types';
+import { exportSummaryToPDF } from '@/lib/pdfExport';
 
 interface SummaryScreenProps {
   summary: ConversationSummary;
   participants: Participant[];
   currentUserId: string;
+  speakingTime?: SpeakingTimeRecord[];
   onAddPrivateNote: (note: string) => void;
   onConfirm: () => void;
   onNewConversation: () => void;
@@ -17,12 +19,31 @@ export function SummaryScreen({
   summary,
   participants,
   currentUserId,
+  speakingTime = [],
   onAddPrivateNote,
   onConfirm,
   onNewConversation,
 }: SummaryScreenProps) {
   const [privateNote, setPrivateNote] = useState('');
   const [isConfirmed, setIsConfirmed] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExportPDF = async () => {
+    setIsExporting(true);
+    try {
+      exportSummaryToPDF({
+        summary,
+        participants,
+        speakingTime,
+        currentUserId,
+        includePrivateNotes: true,
+      });
+    } catch (error) {
+      console.error('Failed to export PDF:', error);
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   const handleAddNote = () => {
     if (privateNote.trim()) {
@@ -215,6 +236,16 @@ export function SummaryScreen({
               Summary saved to your device
             </motion.div>
           )}
+          <button
+            onClick={handleExportPDF}
+            disabled={isExporting}
+            className="btn-secondary w-full flex items-center justify-center gap-2"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 18H7v-2h6v2zm0-4H7v-2h6v2zm2-5V3.5L19.5 9H15z" />
+            </svg>
+            {isExporting ? 'Exporting...' : 'Export as PDF'}
+          </button>
           <button onClick={onNewConversation} className="btn-secondary w-full">
             Start a new conversation
           </button>

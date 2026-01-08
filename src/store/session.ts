@@ -12,7 +12,23 @@ import type {
   ConversationSummary,
   TriggerWord,
   PauseReason,
+  ConversationSettings,
+  ObserverSettings,
 } from '@/types';
+
+const defaultSettings: ConversationSettings = {
+  turnDurationSeconds: 90,
+  maxRounds: 0, // 0 = unlimited
+  enableVolumeAlerts: true,
+  enableBreathingExercise: true,
+};
+
+const defaultObserverSettings: ObserverSettings = {
+  canViewTranscript: true,
+  canViewSpeakingTime: true,
+  canViewTriggerAlerts: true,
+  canExportData: true,
+};
 
 function generateSessionCode(): string {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -28,10 +44,14 @@ const initialState: SessionState = {
   sessionCode: '',
   phase: 'setup',
   participants: [],
+  observers: [],
+  currentParticipantId: null,
   currentSpeakerId: null,
   roundNumber: 0,
   turnTimeSeconds: 90,
   turnStartedAt: null,
+  settings: defaultSettings,
+  observerSettings: defaultObserverSettings,
   transcript: [],
   currentReflectionPrompt: null,
   pauseReason: null,
@@ -39,6 +59,8 @@ const initialState: SessionState = {
   customTriggers: [],
   summary: null,
   intentions: [],
+  speakingTime: [],
+  isObserverMode: false,
 };
 
 export const useSessionStore = create<SessionState & SessionActions>((set, get) => ({
@@ -82,6 +104,24 @@ export const useSessionStore = create<SessionState & SessionActions>((set, get) 
     }));
   },
 
+  joinAsObserver: (code: string, observerName: string) => {
+    const observerId = uuidv4();
+    const observer: Participant = {
+      id: observerId,
+      name: observerName,
+      role: 'observer',
+      isConnected: true,
+      language: 'en',
+      isObserver: true,
+    };
+
+    set((state) => ({
+      observers: [...state.observers, observer],
+      currentParticipantId: observerId,
+      isObserverMode: true,
+    }));
+  },
+
   setIntention: (participantId: string, intention: string) => {
     set((state) => ({
       intentions: [
@@ -94,6 +134,15 @@ export const useSessionStore = create<SessionState & SessionActions>((set, get) 
   addCustomTrigger: (trigger: TriggerWord) => {
     set((state) => ({
       customTriggers: [...state.customTriggers, trigger],
+    }));
+  },
+
+  updateObserverSettings: (settings: Partial<ObserverSettings>) => {
+    set((state) => ({
+      observerSettings: {
+        ...state.observerSettings,
+        ...settings,
+      },
     }));
   },
 
@@ -149,7 +198,7 @@ export const useSessionStore = create<SessionState & SessionActions>((set, get) 
       turnStartedAt: Date.now(),
       participants: state.participants.map((p) => ({
         ...p,
-        role: p.id === participantId ? 'speaker' : 'listener',
+        role: p.isObserver ? 'observer' : (p.id === participantId ? 'speaker' : 'listener'),
       })),
     }));
   },

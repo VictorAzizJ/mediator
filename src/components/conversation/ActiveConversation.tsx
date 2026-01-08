@@ -3,11 +3,13 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useSessionStore } from '@/store/session';
+import { useVolumeMonitor } from '@/hooks/useVolumeMonitor';
 import { Timer } from '@/components/ui/Timer';
 import { VolumeIndicator } from '@/components/ui/VolumeIndicator';
 import { ParticipantCard } from '@/components/ui/ParticipantCard';
 import { ReflectionPrompt } from '@/components/ui/ReflectionPrompt';
 import { PauseOverlay } from '@/components/ui/PauseOverlay';
+import { SpeakingTimeCompact } from '@/components/ui/SpeakingTimeBar';
 
 interface ActiveConversationProps {
   currentUserId: string;
@@ -17,6 +19,7 @@ interface ActiveConversationProps {
   onResume: () => void;
   onDismissReflection: () => void;
   onStartBreathing: () => void;
+  onEndConversation: () => void;
 }
 
 export function ActiveConversation({
@@ -27,18 +30,40 @@ export function ActiveConversation({
   onResume,
   onDismissReflection,
   onStartBreathing,
+  onEndConversation,
 }: ActiveConversationProps) {
   const {
     participants,
     currentSpeakerId,
     turnTimeSeconds,
     turnStartedAt,
-    volumeLevel,
     phase,
     pauseReason,
     currentReflectionPrompt,
     roundNumber,
+    speakingTime,
+    syncState,
   } = useSessionStore();
+
+  // Initialize volume monitoring
+  const { volumeLevel, isListening, startListening, error: micError } = useVolumeMonitor({
+    onHighVolume: (level) => {
+      // Auto-pause if volume stays high
+      console.log('High volume detected:', level);
+      onRequestPause();
+    },
+    onVolumeChange: (level) => {
+      // Update store with current volume
+      syncState({ volumeLevel: level });
+    },
+  });
+
+  // Start listening when conversation becomes active
+  useEffect(() => {
+    if (phase === 'active' && !isListening) {
+      startListening();
+    }
+  }, [phase, isListening, startListening]);
 
   const [showExtendOption, setShowExtendOption] = useState(false);
   const currentParticipant = participants.find((p) => p.id === currentUserId);
@@ -74,7 +99,21 @@ export function ActiveConversation({
             Round {roundNumber}
           </p>
         </div>
-        <VolumeIndicator level={volumeLevel} showWarning />
+        <div className="flex items-center gap-4">
+          <SpeakingTimeCompact
+            speakingTime={speakingTime}
+            participants={participants}
+            currentUserId={currentUserId}
+          />
+          <div className="flex items-center gap-2">
+            {micError && (
+              <span className="text-xs" style={{ color: 'var(--color-alert-red)' }}>
+                Mic unavailable
+              </span>
+            )}
+            <VolumeIndicator level={volumeLevel} showWarning />
+          </div>
+        </div>
       </header>
 
       {/* Main content */}
@@ -165,7 +204,8 @@ export function ActiveConversation({
       {/* Footer - always visible exit option */}
       <footer className="p-4 border-t" style={{ borderColor: 'var(--border-soft)' }}>
         <button
-          className="w-full text-center py-2 text-sm"
+          onClick={onEndConversation}
+          className="w-full text-center py-2 text-sm hover:underline"
           style={{ color: 'var(--color-calm-400)' }}
         >
           I need to stop this conversation
