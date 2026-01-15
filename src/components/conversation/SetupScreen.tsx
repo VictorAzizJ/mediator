@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import type { ConversationSettings } from '@/types';
-import { TemplateSelector } from '@/components/templates';
-import { checkInTemplates, type CheckInTemplate } from '@/lib/checkInTemplates';
+import type { ConversationSettings, SkillBasedTemplate } from '@/types';
+import { SkillTemplateSelector } from '@/components/templates/SkillTemplateSelector';
+import { useSessionStore } from '@/store/session';
 
 interface SetupScreenProps {
   onCreateSession: (name: string, language: 'en' | 'es', settings: ConversationSettings) => void;
@@ -27,11 +27,20 @@ export function SetupScreen({ onCreateSession, onJoinSession }: SetupScreenProps
   const [language, setLanguage] = useState<'en' | 'es'>('en');
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [settings, setSettings] = useState<ConversationSettings>(defaultSettings);
-  const [selectedTemplate, setSelectedTemplate] = useState<CheckInTemplate | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<SkillBasedTemplate | null>(null);
+
+  const syncState = useSessionStore((state) => state.syncState);
 
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
     if (name.trim()) {
+      // Store the selected skill template in session state
+      if (selectedTemplate) {
+        syncState({
+          selectedSkillTemplate: selectedTemplate,
+          skillLearningComplete: false,
+        });
+      }
       onCreateSession(name.trim(), language, settings);
     }
   };
@@ -43,11 +52,11 @@ export function SetupScreen({ onCreateSession, onJoinSession }: SetupScreenProps
     }
   };
 
-  const handleSelectTemplate = (template: CheckInTemplate) => {
+  const handleSelectTemplate = (template: SkillBasedTemplate) => {
     setSelectedTemplate(template);
     setSettings({
       turnDurationSeconds: template.turnDuration,
-      maxRounds: template.maxRounds,
+      maxRounds: 3, // Skill-based templates always have 3 rounds
       enableVolumeAlerts: true,
       enableBreathingExercise: true,
     });
@@ -162,10 +171,10 @@ export function SetupScreen({ onCreateSession, onJoinSession }: SetupScreenProps
     );
   }
 
-  // Template selector
+  // Template selector - now skill-based
   if (mode === 'templates') {
     return (
-      <TemplateSelector
+      <SkillTemplateSelector
         onSelect={handleSelectTemplate}
         onSkip={handleSkipTemplates}
       />
@@ -239,23 +248,24 @@ export function SetupScreen({ onCreateSession, onJoinSession }: SetupScreenProps
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-md"
         >
-          {/* Template info banner */}
+          {/* Skill template info banner */}
           {selectedTemplate && (
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-4 p-4 rounded-lg"
+              className="mb-4 p-4 rounded-xl"
               style={{ backgroundColor: 'var(--color-calm-100)' }}
             >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium text-sm" style={{ color: 'var(--color-calm-700)' }}>
-                    Using template
-                  </p>
-                  <p className="font-semibold" style={{ color: 'var(--foreground)' }}>
-                    {selectedTemplate.name}
-                  </p>
-                </div>
+              <div className="flex items-center justify-between mb-2">
+                <span
+                  className="px-2 py-0.5 rounded text-xs font-semibold"
+                  style={{
+                    backgroundColor: 'var(--color-calm-200)',
+                    color: 'var(--color-calm-700)',
+                  }}
+                >
+                  {selectedTemplate.skill}
+                </span>
                 <button
                   onClick={() => setMode('templates')}
                   className="text-sm underline"
@@ -264,6 +274,12 @@ export function SetupScreen({ onCreateSession, onJoinSession }: SetupScreenProps
                   Change
                 </button>
               </div>
+              <p className="font-semibold" style={{ color: 'var(--foreground)' }}>
+                {selectedTemplate.name}
+              </p>
+              <p className="text-sm mt-1" style={{ color: 'var(--color-calm-500)' }}>
+                3 guided rounds to practice {selectedTemplate.skill}
+              </p>
             </motion.div>
           )}
 

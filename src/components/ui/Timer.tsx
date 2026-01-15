@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 
 interface TimerProps {
@@ -12,12 +12,25 @@ interface TimerProps {
 
 export function Timer({ duration, startedAt, onComplete, size = 120 }: TimerProps) {
   const [remaining, setRemaining] = useState(duration);
-  const [isComplete, setIsComplete] = useState(false);
+  const hasCompletedRef = useRef(false);
+  const onCompleteRef = useRef(onComplete);
+
+  // Keep callback ref updated
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
+
+  // Reset when startedAt changes (new turn started)
+  useEffect(() => {
+    if (startedAt) {
+      hasCompletedRef.current = false;
+      setRemaining(duration);
+    }
+  }, [startedAt, duration]);
 
   useEffect(() => {
     if (!startedAt) {
       setRemaining(duration);
-      setIsComplete(false);
       return;
     }
 
@@ -26,14 +39,14 @@ export function Timer({ duration, startedAt, onComplete, size = 120 }: TimerProp
       const newRemaining = Math.max(0, duration - elapsed);
       setRemaining(newRemaining);
 
-      if (newRemaining === 0 && !isComplete) {
-        setIsComplete(true);
-        onComplete?.();
+      if (newRemaining === 0 && !hasCompletedRef.current) {
+        hasCompletedRef.current = true;
+        onCompleteRef.current?.();
       }
     }, 100);
 
     return () => clearInterval(interval);
-  }, [startedAt, duration, onComplete, isComplete]);
+  }, [startedAt, duration]);
 
   const progress = remaining / duration;
   const circumference = 2 * Math.PI * (size / 2 - 8);

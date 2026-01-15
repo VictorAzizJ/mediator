@@ -2,6 +2,48 @@
 
 export type ParticipantRole = 'speaker' | 'listener' | 'observer';
 
+// ============================================
+// DBT INTERPERSONAL EFFECTIVENESS SKILLS
+// ============================================
+
+export type DBTSkill = 'DEAR MAN' | 'GIVE' | 'FAST';
+
+export interface SkillAcronymBreakdown {
+  letter: string;
+  word: string;
+  description: string;
+}
+
+export interface DBTSkillInfo {
+  id: DBTSkill;
+  name: string;
+  focus: string; // e.g., "assertive communication"
+  summary: string; // 1-paragraph explanation
+  acronymBreakdown: SkillAcronymBreakdown[];
+}
+
+export type RoundPhase = 'setup' | 'practice' | 'reflect';
+
+export interface SkillRoundPrompt {
+  phase: RoundPhase;
+  prompt: string; // Short instructional prompt
+  coachingNote: string; // Displayed before round starts
+}
+
+export interface SkillBasedTemplate {
+  id: string;
+  name: string;
+  description: string; // Use case description
+  skill: DBTSkill;
+  category: 'conflict' | 'feedback' | 'boundary' | 'relationship';
+  estimatedDuration: number; // in minutes
+  turnDuration: number; // in seconds
+  maxRounds: 3; // Always 3 rounds for skill-based templates
+  skillSummary: string; // Pre-round learning content
+  rounds: SkillRoundPrompt[];
+  tags: string[];
+}
+
 export interface Participant {
   id: string;
   name: string;
@@ -122,6 +164,9 @@ export interface SessionState {
   }[];
   speakingTime: SpeakingTimeRecord[];
   isObserverMode: boolean;
+  // Skill-based template state
+  selectedSkillTemplate: SkillBasedTemplate | null;
+  skillLearningComplete: boolean;
 }
 
 export interface SessionActions {
@@ -198,6 +243,68 @@ export interface TranscriptionState {
   currentSegment: TranscriptionSegment | null;
   speakers: Map<number, string>; // speaker ID -> participant name
   error: string | null;
+}
+
+// ============================================
+// SESSION ANALYTICS TYPES (Phase 1)
+// ============================================
+
+export type InputType = 'voice' | 'text';
+
+export interface RoundAnalytics {
+  round: number;
+  phase: RoundPhase;
+  inputType: InputType;
+  text: string;
+  responseLength: number; // word count
+  volumeFlag: boolean; // true if volume alert triggered
+  startTime: number;
+  endTime: number;
+  duration: number; // seconds
+  wasRedone: boolean;
+}
+
+export interface SessionAnalytics {
+  sessionId: string;
+  sessionCode: string;
+  createdAt: number;
+  completedAt: number | null;
+
+  // Core metrics
+  skillUsed: DBTSkill | null;
+  templateId: string | null;
+  templateName: string | null;
+  roundsCompleted: number;
+  totalRounds: number;
+  sessionTime: number; // total seconds
+
+  // Round-by-round data
+  rounds: RoundAnalytics[];
+
+  // Aggregated metrics
+  volumeFlags: number; // total count
+  redos: number; // total re-recorded rounds
+  inputTypeBreakdown: {
+    voice: number;
+    text: number;
+  };
+  averageResponseLength: number;
+
+  // Participant info (anonymized for demo)
+  participantCount: number;
+}
+
+export interface SessionSummaryExport {
+  summary: {
+    skillPracticed: string;
+    roundsCompleted: number;
+    inputBreakdown: string;
+    volumeAlertSummary: string;
+    revisedRounds: number;
+    totalTime: string;
+  };
+  rawData: SessionAnalytics;
+  exportedAt: number;
 }
 
 // ============================================

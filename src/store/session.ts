@@ -61,6 +61,8 @@ const initialState: SessionState = {
   intentions: [],
   speakingTime: [],
   isObserverMode: false,
+  selectedSkillTemplate: null,
+  skillLearningComplete: false,
 };
 
 export const useSessionStore = create<SessionState & SessionActions>((set, get) => ({
@@ -156,7 +158,7 @@ export const useSessionStore = create<SessionState & SessionActions>((set, get) 
   },
 
   startConversation: () => {
-    const { participants } = get();
+    const { participants, settings } = get();
     const firstSpeaker = participants[0];
 
     set({
@@ -164,6 +166,7 @@ export const useSessionStore = create<SessionState & SessionActions>((set, get) 
       roundNumber: 1,
       currentSpeakerId: firstSpeaker?.id || null,
       turnStartedAt: Date.now(),
+      turnTimeSeconds: settings.turnDurationSeconds,
     });
   },
 
@@ -193,9 +196,12 @@ export const useSessionStore = create<SessionState & SessionActions>((set, get) 
 
   // Turn management
   startTurn: (participantId: string) => {
+    const { settings } = get();
     set((state) => ({
       currentSpeakerId: participantId,
       turnStartedAt: Date.now(),
+      // Reset turn duration to base setting at start of each turn
+      turnTimeSeconds: settings.turnDurationSeconds,
       participants: state.participants.map((p) => ({
         ...p,
         role: p.isObserver ? 'observer' : (p.id === participantId ? 'speaker' : 'listener'),
@@ -204,7 +210,7 @@ export const useSessionStore = create<SessionState & SessionActions>((set, get) 
   },
 
   endTurn: () => {
-    const { participants, currentSpeakerId, roundNumber } = get();
+    const { participants, currentSpeakerId, roundNumber, settings } = get();
     const currentIndex = participants.findIndex((p) => p.id === currentSpeakerId);
     const nextIndex = (currentIndex + 1) % participants.length;
     const nextSpeaker = participants[nextIndex];
@@ -217,6 +223,8 @@ export const useSessionStore = create<SessionState & SessionActions>((set, get) 
       currentSpeakerId: nextSpeaker?.id || null,
       roundNumber: newRound,
       turnStartedAt: null,
+      // Reset turn duration to base setting for next turn
+      turnTimeSeconds: settings.turnDurationSeconds,
     });
   },
 
@@ -254,10 +262,12 @@ export const useSessionStore = create<SessionState & SessionActions>((set, get) 
   },
 
   dismissReflectionPrompt: () => {
+    const { settings } = get();
     set({
       currentReflectionPrompt: null,
       phase: 'active',
       turnStartedAt: Date.now(),
+      turnTimeSeconds: settings.turnDurationSeconds,
     });
   },
 

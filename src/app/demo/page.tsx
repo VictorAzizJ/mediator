@@ -14,6 +14,7 @@ import { PrivacyConsent, PrivacyPreferences } from '@/components/onboarding';
 import { MicrophonePermission } from '@/components/onboarding';
 import { SessionRecovery } from '@/components/conversation/SessionRecovery';
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
+import { SkillLearningModule } from '@/components/skill';
 import type { ConversationSettings } from '@/types';
 
 // Demo access code - change this for your presentations
@@ -145,6 +146,9 @@ function DemoContent() {
     currentParticipantId,
     summary,
     speakingTime,
+    selectedSkillTemplate,
+    skillLearningComplete,
+    syncState: storeSyncState,
   } = useSessionStore();
 
   const {
@@ -325,6 +329,18 @@ function DemoContent() {
   };
 
   const handleReady = () => {
+    // If there's a skill template and learning not complete, show learning module
+    if (selectedSkillTemplate && !skillLearningComplete) {
+      storeSyncState({ skillLearningComplete: false });
+      startBreathing(); // This will trigger the skill learning check
+    } else {
+      startBreathing();
+    }
+  };
+
+  const handleSkillLearningComplete = () => {
+    storeSyncState({ skillLearningComplete: true });
+    // Now start breathing exercise
     startBreathing();
   };
 
@@ -435,6 +451,16 @@ function DemoContent() {
         ) : null;
 
       case 'breathing':
+        // Show skill learning module first if template selected and not completed
+        if (selectedSkillTemplate && !skillLearningComplete) {
+          return (
+            <SkillLearningModule
+              skill={selectedSkillTemplate.skill}
+              onComplete={handleSkillLearningComplete}
+              allowSkip={true}
+            />
+          );
+        }
         return (
           <BreathingExercise
             onComplete={handleBreathingComplete}

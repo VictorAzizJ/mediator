@@ -2,17 +2,21 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import type { ConversationSummary, Participant, SpeakingTimeRecord } from '@/types';
+import type { ConversationSummary, Participant, SpeakingTimeRecord, SessionSummaryExport } from '@/types';
 import { exportSummaryToPDF } from '@/lib/pdfExport';
+import { SessionAnalyticsSummary } from '@/components/analytics';
+import { exportAnalyticsToCSV } from '@/store/analytics';
 
 interface SummaryScreenProps {
   summary: ConversationSummary;
   participants: Participant[];
   currentUserId: string;
   speakingTime?: SpeakingTimeRecord[];
+  sessionAnalytics?: SessionSummaryExport | null;
   onAddPrivateNote: (note: string) => void;
   onConfirm: () => void;
   onNewConversation: () => void;
+  onEmailReport?: (email: string) => void;
 }
 
 export function SummaryScreen({
@@ -20,13 +24,18 @@ export function SummaryScreen({
   participants,
   currentUserId,
   speakingTime = [],
+  sessionAnalytics,
   onAddPrivateNote,
   onConfirm,
   onNewConversation,
+  onEmailReport,
 }: SummaryScreenProps) {
   const [privateNote, setPrivateNote] = useState('');
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const [activeTab, setActiveTab] = useState<'summary' | 'analytics'>(
+    sessionAnalytics ? 'analytics' : 'summary'
+  );
 
   const handleExportPDF = async () => {
     setIsExporting(true);
@@ -61,6 +70,31 @@ export function SummaryScreen({
     (n) => n.participantId === currentUserId
   );
 
+  // Export handlers for analytics
+  const handleExportJSON = () => {
+    if (!sessionAnalytics) return;
+    const json = JSON.stringify(sessionAnalytics, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `mediator-session-${sessionAnalytics.rawData.sessionCode}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleExportCSV = () => {
+    if (!sessionAnalytics) return;
+    const csv = exportAnalyticsToCSV(sessionAnalytics.rawData);
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `mediator-session-${sessionAnalytics.rawData.sessionCode}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div
       className="min-h-screen p-4"
@@ -72,7 +106,7 @@ export function SummaryScreen({
         className="max-w-2xl mx-auto"
       >
         {/* Header */}
-        <div className="text-center mb-8 pt-8">
+        <div className="text-center mb-6 pt-8">
           <div
             className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"
             style={{ backgroundColor: 'var(--color-safe-green)' }}
@@ -85,10 +119,65 @@ export function SummaryScreen({
             Conversation Complete
           </h1>
           <p style={{ color: 'var(--color-calm-500)' }}>
-            Thank you both for showing up. Here's a summary of what you discussed.
+            {sessionAnalytics
+              ? 'Review your session analytics and conversation summary'
+              : 'Thank you both for showing up. Here\'s a summary of what you discussed.'}
           </p>
         </div>
 
+        {/* Tab Switcher - only show if analytics available */}
+        {sessionAnalytics && (
+          <div className="flex gap-2 mb-6 justify-center">
+            <button
+              onClick={() => setActiveTab('analytics')}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                activeTab === 'analytics' ? '' : 'opacity-60'
+              }`}
+              style={{
+                backgroundColor: activeTab === 'analytics'
+                  ? 'var(--color-calm-700)'
+                  : 'var(--color-calm-100)',
+                color: activeTab === 'analytics' ? 'white' : 'var(--color-calm-700)',
+              }}
+            >
+              Session Analytics
+            </button>
+            <button
+              onClick={() => setActiveTab('summary')}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                activeTab === 'summary' ? '' : 'opacity-60'
+              }`}
+              style={{
+                backgroundColor: activeTab === 'summary'
+                  ? 'var(--color-calm-700)'
+                  : 'var(--color-calm-100)',
+                color: activeTab === 'summary' ? 'white' : 'var(--color-calm-700)',
+              }}
+            >
+              Conversation Summary
+            </button>
+          </div>
+        )}
+
+        {/* Analytics Tab */}
+        {sessionAnalytics && activeTab === 'analytics' && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="mb-8"
+          >
+            <SessionAnalyticsSummary
+              analytics={sessionAnalytics}
+              onExportJSON={handleExportJSON}
+              onExportCSV={handleExportCSV}
+              onEmailReport={onEmailReport}
+            />
+          </motion.div>
+        )}
+
+        {/* Summary Tab - show when summary tab active OR no analytics */}
+        {(!sessionAnalytics || activeTab === 'summary') && (
+          <>
         {/* Summary card */}
         <div className="card mb-6">
           {/* Topics */}
@@ -255,6 +344,8 @@ export function SummaryScreen({
         <p className="text-center text-sm pb-8" style={{ color: 'var(--color-calm-400)' }}>
           Remember: one conversation doesn't fix everything. But you showed up. That matters.
         </p>
+          </>
+        )}
       </motion.div>
     </div>
   );

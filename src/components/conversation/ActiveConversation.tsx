@@ -10,6 +10,8 @@ import { ParticipantCard } from '@/components/ui/ParticipantCard';
 import { ReflectionPrompt } from '@/components/ui/ReflectionPrompt';
 import { PauseOverlay } from '@/components/ui/PauseOverlay';
 import { SpeakingTimeCompact } from '@/components/ui/SpeakingTimeBar';
+import { RoundPromptCompact } from '@/components/skill/RoundPromptDisplay';
+import { SkillReferenceCard } from '@/components/skill/SkillReferenceCard';
 
 interface ActiveConversationProps {
   currentUserId: string;
@@ -43,7 +45,12 @@ export function ActiveConversation({
     roundNumber,
     speakingTime,
     syncState,
+    selectedSkillTemplate,
   } = useSessionStore();
+
+  // Get current round prompt if using skill template
+  const currentRoundPrompt = selectedSkillTemplate?.rounds[roundNumber - 1] || null;
+  const isSkillBased = !!selectedSkillTemplate;
 
   // Initialize volume monitoring
   const { volumeLevel, isListening, startListening, error: micError } = useVolumeMonitor({
@@ -93,10 +100,10 @@ export function ActiveConversation({
       <header className="p-4 flex justify-between items-center border-b" style={{ borderColor: 'var(--border-soft)' }}>
         <div>
           <h1 className="font-semibold" style={{ color: 'var(--foreground)' }}>
-            Mediator
+            {isSkillBased ? selectedSkillTemplate.skill : 'Mediator'}
           </h1>
           <p className="text-sm" style={{ color: 'var(--color-calm-500)' }}>
-            Round {roundNumber}
+            Round {roundNumber}{isSkillBased ? ' of 3' : ''}
           </p>
         </div>
         <div className="flex items-center gap-4">
@@ -146,16 +153,26 @@ export function ActiveConversation({
                 size={160}
               />
 
-              <motion.p
-                className="text-lg text-center max-w-xs"
-                style={{ color: 'var(--color-calm-600)' }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-              >
-                {isSpeaking
-                  ? 'Share what you need to say'
-                  : `Listen to ${otherParticipant?.name || 'them'} without interrupting`}
-              </motion.p>
+              {/* Skill-based round prompt or generic instruction */}
+              {isSkillBased && currentRoundPrompt ? (
+                <div className="max-w-sm">
+                  <RoundPromptCompact
+                    roundNumber={roundNumber}
+                    roundPrompt={currentRoundPrompt}
+                  />
+                </div>
+              ) : (
+                <motion.p
+                  className="text-lg text-center max-w-xs"
+                  style={{ color: 'var(--color-calm-600)' }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                >
+                  {isSpeaking
+                    ? 'Share what you need to say'
+                    : `Listen to ${otherParticipant?.name || 'them'} without interrupting`}
+                </motion.p>
+              )}
 
               {/* Speaker controls */}
               {isSpeaking && (
@@ -211,6 +228,11 @@ export function ActiveConversation({
           I need to stop this conversation
         </button>
       </footer>
+
+      {/* Skill Reference Card (floating) */}
+      {isSkillBased && selectedSkillTemplate && (
+        <SkillReferenceCard skill={selectedSkillTemplate.skill} />
+      )}
 
       {/* Pause overlay */}
       <PauseOverlay
