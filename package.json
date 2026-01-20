@@ -12,9 +12,11 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.71.0",
     "@deepgram/sdk": "^4.11.3",
     "@ricky0123/vad-web": "^0.0.30",
     "@supabase/supabase-js": "^2.47.0",
+    "chart.js": "^4.5.1",
     "express-rate-limit": "^8.2.1",
     "framer-motion": "^12.23.25",
     "ioredis": "^5.8.2",
@@ -22,7 +24,9 @@
     "next": "16.0.7",
     "onnxruntime-web": "^1.23.2",
     "react": "19.2.0",
+    "react-chartjs-2": "^5.3.1",
     "react-dom": "19.2.0",
+    "recharts": "^2.12.7",
     "resend": "^6.8.0",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",
