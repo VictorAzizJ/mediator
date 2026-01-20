@@ -41,3 +41,7 @@ coverage/
 # Misc
 *.tsbuildinfo
 next-env.d.ts
+
+backend/.env
+backend/transcripts.db-journal
+backend/__pycache__/*

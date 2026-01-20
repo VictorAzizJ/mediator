@@ -15,6 +15,7 @@ import { MicrophonePermission } from '@/components/onboarding';
 import { SessionRecovery } from '@/components/conversation/SessionRecovery';
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
 import { SkillLearningModule } from '@/components/skill';
+import { ReportsPage } from '@/components/reports';
 import type { ConversationSettings } from '@/types';
 
 // Demo access code - change this for your presentations
@@ -35,7 +36,8 @@ type AppState =
   | 'privacy-consent'
   | 'mic-permission'
   | 'session-recovery'
-  | 'main';
+  | 'main'
+  | 'reports';
 
 interface SavedSessionInfo {
   sessionCode: string;
@@ -421,15 +423,58 @@ function DemoContent() {
     );
   }
 
+  if (appState === 'reports') {
+    return (
+      <div>
+        <div
+          className="p-4 border-b flex items-center justify-between"
+          style={{
+            backgroundColor: 'var(--card-background)',
+            borderColor: 'var(--border-soft)',
+          }}
+        >
+          <h1 className="text-xl font-semibold" style={{ color: 'var(--foreground)' }}>
+            Reports
+          </h1>
+          <button
+            onClick={() => setAppState('main')}
+            className="px-4 py-2 rounded-lg"
+            style={{
+              backgroundColor: 'var(--color-calm-100)',
+              color: 'var(--foreground)',
+            }}
+          >
+            Back to Demo
+          </button>
+        </div>
+        <ReportsPage />
+      </div>
+    );
+  }
+
   // Main app - render based on session phase
   const renderPhase = () => {
     switch (phase) {
       case 'setup':
         return (
-          <SetupScreen
-            onCreateSession={handleCreateSession}
-            onJoinSession={handleJoinSession}
-          />
+          <div>
+            <div className="p-4 flex justify-end" style={{ backgroundColor: 'var(--background)' }}>
+              <button
+                onClick={() => setAppState('reports')}
+                className="px-4 py-2 rounded-lg text-sm"
+                style={{
+                  backgroundColor: 'var(--color-calm-100)',
+                  color: 'var(--foreground)',
+                }}
+              >
+                View Reports
+              </button>
+            </div>
+            <SetupScreen
+              onCreateSession={handleCreateSession}
+              onJoinSession={handleJoinSession}
+            />
+          </div>
         );
 
       case 'connecting':

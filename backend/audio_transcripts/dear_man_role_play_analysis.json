@@ -1,0 +1,1388 @@
+{
+  "transcript": "Speaker A: Christina. Oh, I had the worst day. Like, you won't believe what my boss did. I can't wait to tell you about this. You will not believe it. It's just horrendous. Like, she just doesn't respect me. She doesn't, like, listen to me. She pushes me too hard. Like, stop.\nSpeaker B: Stop before you keep going. I see that this is really important to you, and you really want to talk about this right now. And I've had the most overwhelming day today at work, and as much as I wish I had the bandwidth for this right now, I don't. And I really want to support you. I know that this is really important for you to share. I just cannot do this. And I feel that if you can respect me in this decision, if you can respect where I'm coming from, I can be more attentive at a later time.\nSpeaker A: I mean. I mean, I do get having a hard day. Obviously, I have a hard day, but I had one, too. But, like, I really want to talk. I really feel like I need to talk about it. Like, and you give such good advice, and, like, I feel like you just, like, help me see things clearly. So I just, like, I just really want to talk, you know?\nSpeaker B: I know you want to talk. I hear it. I hear how important it is for you, and I just can't do it. You know how it is when we start having these conversations late at night, I then can't go to sleep, and then it just messes up my whole schedule. We can't have the conversation tonight.\nSpeaker A: So, like, you're shutting me down again.\nSpeaker B: Kristen, I'm just saying, tonight I can. Is there something else that we can do? Like, is there another way that we can, like, make this work? Like, is there something that you can think of? You know, if I can't do it tonight, can we maybe do it the next day? I mean, what are your thoughts?\nSpeaker A: I mean, I guess tomorrow morning will be okay. I guess we could talk about it in the morning.\nSpeaker B: That would be great.\nSpeaker A: You have time?\nSpeaker B: Yeah. Yeah, I have time. Yeah. We can do it over breakfast.\nSpeaker A: Okay. Okay. I can do that. I can do that. I mean, I get. I get that you had a hard day. Yeah. That would mean a lot if we could talk about it at breakfast.\nSpeaker B: Perfect. Trust me, it's going to be better. I'll be better able to listen to you. I'll be more attentive. You'll get your. Your needs met if we do it tomorrow.\nSpeaker A: Okay. Okay. I can respect that. I can do that. Okay. Thank you. Go back to your book. Now we're good.",
+  "transcript_with_speakers": "Speaker A: Christina. Oh, I had the worst day. Like, you won't believe what my boss did. I can't wait to tell you about this. You will not believe it. It's just horrendous. Like, she just doesn't respect me. She doesn't, like, listen to me. She pushes me too hard. Like, stop.\n\nSpeaker B: Stop before you keep going. I see that this is really important to you, and you really want to talk about this right now. And I've had the most overwhelming day today at work, and as much as I wish I had the bandwidth for this right now, I don't. And I really want to support you. I know that this is really important for you to share. I just cannot do this. And I feel that if you can respect me in this decision, if you can respect where I'm coming from, I can be more attentive at a later time.\n\nSpeaker A: I mean. I mean, I do get having a hard day. Obviously, I have a hard day, but I had one, too. But, like, I really want to talk. I really feel like I need to talk about it. Like, and you give such good advice, and, like, I feel like you just, like, help me see things clearly. So I just, like, I just really want to talk, you know?\n\nSpeaker B: I know you want to talk. I hear it. I hear how important it is for you, and I just can't do it. You know how it is when we start having these conversations late at night, I then can't go to sleep, and then it just messes up my whole schedule. We can't have the conversation tonight.\n\nSpeaker A: So, like, you're shutting me down again.\n\nSpeaker B: Kristen, I'm just saying, tonight I can. Is there something else that we can do? Like, is there another way that we can, like, make this work? Like, is there something that you can think of? You know, if I can't do it tonight, can we maybe do it the next day? I mean, what are your thoughts?\n\nSpeaker A: I mean, I guess tomorrow morning will be okay. I guess we could talk about it in the morning.\n\nSpeaker B: That would be great.\n\nSpeaker A: You have time?\n\nSpeaker B: Yeah. Yeah, I have time. Yeah. We can do it over breakfast.\n\nSpeaker A: Okay. Okay. I can do that. I can do that. I mean, I get. I get that you had a hard day. Yeah. That would mean a lot if we could talk about it at breakfast.\n\nSpeaker B: Perfect. Trust me, it's going to be better. I'll be better able to listen to you. I'll be more attentive. You'll get your. Your needs met if we do it tomorrow.\n\nSpeaker A: Okay. Okay. I can respect that. I can do that. Okay. Thank you. Go back to your book. Now we're good.",
+  "raw_category_results": {
+    "sentiment": {
+      "messages": [
+        {
+          "speaker": "Speaker A",
+          "text": "Christina. Oh, I had the worst day. Like, you won't believe what my boss did. I can't wait to tell you about this. You will not believe it. It's just horrendous. Like, she just doesn't respect me. She doesn't, like, listen to me. She pushes me too hard. Like, stop.",
+          "sentiment": {
+            "label": "negative",
+            "explanation": "The message contains strong expressions of frustration, anger, and dissatisfaction ('worst day,' 'horrendous,' 'doesn't respect me,' 'doesn't listen to me'). The speaker expresses a desire to vent about a negative experience."
+          }
+        },
+        {
+          "speaker": "Speaker B",
+          "text": "Stop before you keep going. I see that this is really important to you, and you really want to talk about this right now. And I've had the most overwhelming day today at work, and as much as I wish I had the bandwidth for this right now, I don't. And I really want to support you. I know that this is really important for you to share. I just cannot do this. And I feel that if you can respect me in this decision, if you can respect where I'm coming from, I can be more attentive at a later time.",
+          "sentiment": {
+            "label": "neutral",
+            "explanation": "The message contains a mix of empathy ('I see that this is really important to you,' 'I really want to support you') and a firm boundary ('I just cannot do this'). The tone is measured and respectful, but the overall sentiment leans neutral due to the balance of supportive and limiting language."
+          }
+        },
+        {
+          "speaker": "Speaker A",
+          "text": "I mean. I mean, I do get having a hard day. Obviously, I have a hard day, but I had one, too. But, like, I really want to talk. I really feel like I need to talk about it. Like, and you give such good advice, and, like, I feel like you just, like, help me see things clearly. So I just, like, I just really want to talk, you know?",
+          "sentiment": {
+            "label": "positive",
+            "explanation": "The message expresses a desire for connection and appreciation ('you give such good advice,' 'help me see things clearly'). While the speaker acknowledges their own struggles, the overall sentiment is positive due to the emphasis on wanting to talk and feeling supported."
+          }
+        },
+        {
+          "speaker": "Speaker B",
+          "text": "I know you want to talk. I hear it. I hear how important it is for you, and I just can't do it. You know how it is when we start having these conversations late at night, I then can't go to sleep, and then it just messes up my whole schedule. We can't have the conversation tonight.",
+          "sentiment": {
+            "label": "neutral",
+            "explanation": "The message conveys empathy ('I know you want to talk,' 'I hear it') but also a firm boundary ('I just can't do it'). The sentiment is neutral due to the balanced tone of understanding and limitation."
+          }
+        },
+        {
+          "speaker": "Speaker A",
+          "text": "So, like, you're shutting me down again.",
+          "sentiment": {
+            "label": "negative",
+            "explanation": "The message is accusatory and conveys frustration ('shutting me down again'), indicating a negative sentiment."
+          }
+        },
+        {
+          "speaker": "Speaker B",
+          "text": "Kristen, I'm just saying, tonight I can. Is there something else that we can do? Like, is there another way that we can, like, make this work? Like, is there something that you can think of? You know, if I can't do it tonight, can we maybe do it the next day? I mean, what are your thoughts?",
+          "sentiment": {
+            "label": "neutral",
+            "explanation": "The message is solution-oriented and shows a willingness to accommodate ('tonight I can,' 'can we do it the next day'). The tone is neutral, as it focuses on finding a compromise rather than expressing strong emotions."
+          }
+        },
+        {
+          "speaker": "Speaker A",
+          "text": "I mean, I guess tomorrow morning will be okay. I guess we could talk about it in the morning.",
+          "sentiment": {
+            "label": "neutral",
+            "explanation": "The message is resigned and pragmatic ('I guess,' 'will be okay'), indicating a neutral sentiment with a hint of acceptance."
+          }
+        },
+        {
+          "speaker": "Speaker B",
+          "text": "Yeah. Yeah, I have time. Yeah. We can do it over breakfast.",
+          "sentiment": {
+            "label": "positive",
+            "explanation": "The message is concise and affirmative ('Yeah, I have time,' 'We can do it over breakfast'), with a positive tone of agreement and willingness to accommodate."
+          }
+        },
+        {
+          "speaker": "Speaker A",
+          "text": "Okay. Okay. I can do that. I mean, I get. I get that you had a hard day. Yeah. That would mean a lot if we could talk about it at breakfast.",
+          "sentiment": {
+            "label": "positive",
+            "explanation": "The message shows understanding ('I get that you had a hard day') and appreciation ('that would mean a lot'). The overall sentiment is positive, reflecting acceptance and gratitude."
+          }
+        },
+        {
+          "speaker": "Speaker B",
+          "text": "Perfect. Trust me, it's going to be better. I'll be better able to listen to you. I'll be more attentive. You'll get your needs met if we do it tomorrow.",
+          "sentiment": {
+            "label": "positive",
+            "explanation": "The message is reassuring and optimistic ('Perfect,' 'it's going to be better,' 'I'll be more attentive'). The tone is positive, indicating confidence in the upcoming conversation."
+          }
+        },
+        {
+          "speaker": "Speaker A",
+          "text": "Okay. Okay. I can respect that. I can do that. Okay. Thank you. Go back to your book. Now we're good.",
+          "sentiment": {
+            "label": "positive",
+            "explanation": "The message conveys acceptance ('I can respect that'), gratitude ('Thank you'), and a sense of resolution ('Now we're good'). The overall sentiment is positive."
+          }
+        }
+      ]
+    },
+    "dear_man": {
+      "messages": [
+        {
+          "speaker": "Speaker A",
+          "text": "Christina. Oh, I had the worst day. Like, you won't believe what my boss did. I can't wait to tell you about this. You will not believe it. It's just horrendous. Like, she just doesn't respect me. She doesn't, like, listen to me. She pushes me too hard. Like, stop.",
+          "dear_man": {
+            "score": 0,
+            "breakdown": {
+              "describe": {
+                "adhered": false,
+                "explanation": "The speaker does not provide factual statements. Instead, they use emotional language ('worst day', 'horrendous') and vague descriptions without specifics."
+              },
+              "express": {
+                "adhered": true,
+                "explanation": "The speaker expresses feelings implicitly ('worst day', 'she doesn't respect me', 'she pushes me too hard'). However, they do not explicitly use 'I feel' or 'I felt'."
+              },
+              "assert": {
+                "adhered": false,
+                "explanation": "The speaker does not assert their needs using 'I want', 'I need', or similar phrases."
+              },
+              "reinforce": {
+                "adhered": false,
+                "explanation": "No reinforcement of a request with 'because', 'this would', or similar phrases."
+              },
+              "mindful": {
+                "adhered": false,
+                "explanation": "The speaker goes off-topic with tangents ('Like, stop') and excessive emotional venting."
+              },
+              "appear_confident": {
+                "adhered": false,
+                "explanation": "The speaker uses hedging ('like', 'you won't believe') and lacks directness."
+              },
+              "negotiate": {
+                "adhered": false,
+                "explanation": "No negotiation attempt is made."
+              }
+            }
+          }
+        },
+        {
+          "speaker": "Speaker B",
+          "text": "Stop before you keep going. I see that this is really important to you, and you really want to talk about this right now. And I've had the most overwhelming day today at work, and as much as I wish I had the bandwidth for this right now, I don't. And I really want to support you. I know that this is really important for you to share. I just cannot do this. And I feel that if you can respect me in this decision, if you can respect where I'm coming from, I can be more attentive at a later time.",
+          "dear_man": {
+            "score": 1,
+            "breakdown": {
+              "describe": {
+                "adhered": false,
+                "explanation": "No factual description of the situation or needs."
+              },
+              "express": {
+                "adhered": true,
+                "explanation": "The speaker expresses feelings ('I've had the most overwhelming day', 'I really want to support you')."
+              },
+              "assert": {
+                "adhered": false,
+                "explanation": "No clear assertion of needs using 'I want', 'I need', etc."
+              },
+              "reinforce": {
+                "adhered": false,
+                "explanation": "No reinforcement of a request with 'because' or similar phrases."
+              },
+              "mindful": {
+                "adhered": false,
+                "explanation": "The speaker does not stay strictly on topic; they shift focus to their own day and bandwidth."
+              },
+              "appear_confident": {
+                "adhered": false,
+                "explanation": "The speaker uses hedging ('I just cannot do this') and is not assertive in their refusal."
+              },
+              "negotiate": {
+                "adhered": false,
+                "explanation": "No explicit negotiation attempt, though there is an implicit suggestion of a later time."
+              }
+            }
+          }
+        },
+        {
+          "speaker": "Speaker A",
+          "text": "I mean. I mean, I do get having a hard day. Obviously, I have a hard day, but I had one, too. But, like, I really want to talk. I really feel like I need to talk about it. Like, and you give such good advice, and, like, I feel like you just, like, help me see things clearly. So I just, like, I just really want to talk, you know?",
+          "dear_man": {
+            "score": 1,
+            "breakdown": {
+              "describe": {
+                "adhered": false,
+                "explanation": "No factual description of the situation or needs."
+              },
+              "express": {
+                "adhered": true,
+                "explanation": "The speaker expresses feelings ('I really feel like I need to talk', 'I feel like you help me see things clearly')."
+              },
+              "assert": {
+                "adhered": false,
+                "explanation": "The speaker does not assert needs using 'I want', 'I need' explicitly, though they imply it."
+              },
+              "reinforce": {
+                "adhered": false,
+                "explanation": "No reinforcement of a request with 'because' or similar phrases."
+              },
+              "mindful": {
+                "adhered": false,
+                "explanation": "The speaker goes off-topic with compliments ('you give such good advice') and tangents ('like, I just really want to talk')."
+              },
+              "appear_confident": {
+                "adhered": false,
+                "explanation": "The speaker uses hedging ('like', 'I mean') and lacks directness."
+              },
+              "negotiate": {
+                "adhered": false,
+                "explanation": "No negotiation attempt is made."
+              }
+            }
+          }
+        },
+        {
+          "speaker": "Speaker B",
+          "text": "I know you want to talk. I hear it. I hear how important it is for you, and I just can't do it. You know how it is when we start having these conversations late at night, I then can't go to sleep, and then it just messes up my whole schedule. We can't have the conversation tonight.",
+          "dear_man": {
+            "score": 1,
+            "breakdown": {
+              "describe": {
+                "adhered": false,
+                "explanation": "No factual description of the situation or needs."
+              },
+              "express": {
+                "adhered": true,
+                "explanation": "The speaker expresses feelings ('I just can't do it') and acknowledges the importance of the conversation to the other speaker."
+              },
+              "assert": {
+                "adhered": false,
+                "explanation": "No clear assertion of needs using 'I want', 'I need', etc."
+              },
+              "reinforce": {
+                "adhered": false,
+                "explanation": "No reinforcement of a request with 'because' or similar phrases."
+              },
+              "mindful": {
+                "adhered": false,
+                "explanation": "The speaker shifts focus to their own schedule and sleep, which is tangential."
+              },
+              "appear_confident": {
+                "adhered": false,
+                "explanation": "The speaker uses a passive tone ('I just can't do it') and does not assert their boundary confidently."
+              },
+              "negotiate": {
+                "adhered": false,
+                "explanation": "No explicit negotiation attempt, though the refusal is stated."
+              }
+            }
+          }
+        },
+        {
+          "speaker": "Speaker A",
+          "text": "So, like, you're shutting me down again.",
+          "dear_man": {
+            "score": 0,
+            "breakdown": {
+              "describe": {
+                "adhered": false,
+                "explanation": "No factual description; it is an emotional accusation."
+              },
+              "express": {
+                "adhered": false,
+                "explanation": "No explicit expression of feelings using 'I feel' or similar phrases."
+              },
+              "assert": {
+                "adhered": false,
+                "explanation": "No assertion of needs."
+              },
+              "reinforce": {
+                "adhered": false,
+                "explanation": "No reinforcement of a request."
+              },
+              "mindful": {
+                "adhered": false,
+                "explanation": "The message is confrontational and off-topic."
+              },
+              "appear_confident": {
+                "adhered": false,
+                "explanation": "The speaker uses a hedging word ('like') and an accusatory tone."
+              },
+              "negotiate": {
+                "adhered": false,
+                "explanation": "No negotiation attempt."
+              }
+            }
+          }
+        },
+        {
+          "speaker": "Speaker B",
+          "text": "Kristen, I'm just saying, tonight I can. Is there something else that we can do? Like, is there another way that we can, like, make this work? Like, is there something that you can think of? You know, if I can't do it tonight, can we maybe do it the next day? I mean, what are your thoughts?",
+          "dear_man": {
+            "score": 3,
+            "breakdown": {
+              "describe": {
+                "adhered": false,
+                "explanation": "No factual description of the situation or needs."
+              },
+              "express": {
+                "adhered": false,
+                "explanation": "No explicit expression of feelings."
+              },
+              "assert": {
+                "adhered": false,
+                "explanation": "No clear assertion of needs using 'I want', 'I need', etc."
+              },
+              "reinforce": {
+                "adhered": false,
+                "explanation": "No reinforcement of a request with 'because' or similar phrases."
+              },
+              "mindful": {
+                "adhered": true,
+                "explanation": "The speaker stays on topic and focuses on finding a solution."
+              },
+              "appear_confident": {
+                "adhered": false,
+                "explanation": "The speaker uses hedging ('like', 'maybe') and lacks directness."
+              },
+              "negotiate": {
+                "adhered": true,
+                "explanation": "The speaker attempts negotiation with 'what if', 'can we', and 'what are your thoughts?'"
+              }
+            }
+          }
+        },
+        {
+          "speaker": "Speaker A",
+          "text": "I mean, I guess tomorrow morning will be okay. I guess we could talk about it in the morning.",
+          "dear_man": {
+            "score": 1,
+            "breakdown": {
+              "describe": {
+                "adhered": false,
+                "explanation": "No factual description of the situation or needs."
+              },
+              "express": {
+                "adhered": false,
+                "explanation": "No explicit expression of feelings."
+              },
+              "assert": {
+                "adhered": false,
+                "explanation": "No clear assertion of needs."
+              },
+              "reinforce": {
+                "adhered": false,
+                "explanation": "No reinforcement of a request."
+              },
+              "mindful": {
+                "adhered": true,
+                "explanation": "The speaker stays on topic and agrees to a solution."
+              },
+              "appear_confident": {
+                "adhered": false,
+                "explanation": "The speaker uses hedging ('I guess')."
+              },
+              "negotiate": {
+                "adhered": false,
+                "explanation": "No explicit negotiation attempt."
+              }
+            }
+          }
+        },
+        {
+          "speaker": "Speaker B",
+          "text": "Yeah. Yeah, I have time. Yeah. We can do it over breakfast.",
+          "dear_man": {
+            "score": 0,
+            "breakdown": {
+              "describe": {
+                "adhered": false,
+                "explanation": "No factual description."
+              },
+              "express": {
+                "adhered": false,
+                "explanation": "No expression of feelings."
+              },
+              "assert": {
+                "adhered": false,
+                "explanation": "No assertion of needs."
+              },
+              "reinforce": {
+                "adhered": false,
+                "explanation": "No reinforcement of a request."
+              },
+              "mindful": {
+                "adhered": true,
+                "explanation": "The speaker stays on topic."
+              },
+              "appear_confident": {
+                "adhered": false,
+                "explanation": "The speaker is vague and lacks directness."
+              },
+              "negotiate": {
+                "adhered": false,
+                "explanation": "No negotiation attempt."
+              }
+            }
+          }
+        },
+        {
+          "speaker": "Speaker A",
+          "text": "Okay. Okay. I can do that. I mean, I get. I get that you had a hard day. Yeah. That would mean a lot if we could talk about it at breakfast.",
+          "dear_man": {
+            "score": 1,
+            "breakdown": {
+              "describe": {
+                "adhered": false,
+                "explanation": "No factual description."
+              },
+              "express": {
+                "adhered": false,
+                "explanation": "No explicit expression of feelings."
+              },
+              "assert": {
+                "adhered": false,
+                "explanation": "No assertion of needs."
+              },
+              "reinforce": {
+                "adhered": false,
+                "explanation": "No reinforcement of a request."
+              },
+              "mindful": {
+                "adhered": true,
+                "explanation": "The speaker stays on topic."
+              },
+              "appear_confident": {
+                "adhered": false,
+                "explanation": "The speaker uses hedging ('I mean') and is not assertive."
+              },
+              "negotiate": {
+                "adhered": false,
+                "explanation": "No negotiation attempt."
+              }
+            }
+          }
+        },
+        {
+          "speaker": "Speaker B",
+          "text": "Perfect. Trust me, it's going to be better. I'll be better able to listen to you. I'll be more attentive. You'll get your needs met if we do it tomorrow.",
+          "dear_man": {
+            "score": 2,
+            "breakdown": {
+              "describe": {
+                "adhered": false,
+                "explanation": "No factual description."
+              },
+              "express": {
+                "adhered": false,
+                "explanation": "No explicit expression of feelings."
+              },
+              "assert": {
+                "adhered": false,
+                "explanation": "No explicit assertion of needs using 'I want', 'I need', etc."
+              },
+              "reinforce": {
+                "adhered": true,
+                "explanation": "The speaker reinforces the request with 'because' implied ('it's going to be better' and 'you'll get your needs met')."
+              },
+              "mindful": {
+                "adhered": true,
+                "explanation": "The speaker stays on topic."
+              },
+              "appear_confident": {
+                "adhered": true,
+                "explanation": "The speaker appears confident and direct."
+              },
+              "negotiate": {
+                "adhered": false,
+                "explanation": "No negotiation attempt."
+              }
+            }
+          }
+        },
+        {
+          "speaker": "Speaker A",
+          "text": "Okay. Okay. I can respect that. I can do that. Okay. Thank you. Go back to your book. Now we're good.",
+          "dear_man": {
+            "score": 0,
+            "breakdown": {
+              "describe": {
+                "adhered": false,
+                "explanation": "No factual description."
+              },
+              "express": {
+                "adhered": false,
+                "explanation": "No explicit expression of feelings."
+              },
+              "assert": {
+                "adhered": false,
+                "explanation": "No assertion of needs."
+              },
+              "reinforce": {
+                "adhered": false,
+                "explanation": "No reinforcement of a request."
+              },
+              "mindful": {
+                "adhered": true,
+                "explanation": "The speaker stays on topic."
+              },
+              "appear_confident": {
+                "adhered": false,
+                "explanation": "The speaker is vague and lacks assertiveness."
+              },
+              "negotiate": {
+                "adhered": false,
+                "explanation": "No negotiation attempt."
+              }
+            }
+          }
+        }
+      ]
+    },
+    "fast": {
+      "messages": [
+        {
+          "speaker": "Speaker A",
+          "text": "Christina. Oh, I had the worst day. Like, you won't believe what my boss did. I can't wait to tell you about this. You will not believe it. It's just horrendous. Like, she just doesn't respect me. She doesn't, like, listen to me. She pushes me too hard. Like, stop.",
+          "fast": {
+            "score": 1,
+            "breakdown": {
+              "fair": {
+                "adhered": false,
+                "explanation": "The speaker is venting about their boss but does not acknowledge any potential fairness in their boss's actions or their own role in the situation. The tone is overly dramatic and lacks consideration for the boss's perspective."
+              },
+              "apologies": {
+                "adhered": true,
+                "explanation": "No apologies are given, and none are needed in this context, so this adheres to the FAST guideline of avoiding unnecessary apologies."
+              },
+              "stick_to_values": {
+                "adhered": false,
+                "explanation": "The speaker does not demonstrate adherence to values like empathy, patience, or professionalism. They focus solely on their own frustration without considering the situation from another perspective."
+              },
+              "truthful": {
+                "adhered": true,
+                "explanation": "The speaker is truthful in expressing their feelings and experiences, though the tone and framing may lack nuance."
+              }
+            }
+          }
+        },
+        {
+          "speaker": "Speaker B",
+          "text": "Stop before you keep going. I see that this is really important to you, and you really want to talk about this right now. And I've had the most overwhelming day today at work, and as much as I wish I had the bandwidth for this right now, I don't. And I really want to support you. I just cannot do this. And I feel that if you can respect me in this decision, if you can respect where I'm coming from, I can be more attentive at a later time.",
+          "fast": {
+            "score": 4,
+            "breakdown": {
+              "fair": {
+                "adhered": true,
+                "explanation": "Speaker B acknowledges the importance of the issue to Speaker A while also recognizing their own limitations. They do not blame Speaker A for their own constraints."
+              },
+              "apologies": {
+                "adhered": true,
+                "explanation": "Speaker B does not over-apologize or apologize for things outside their control. They clearly communicate their boundaries without unnecessary guilt."
+              },
+              "stick_to_values": {
+                "adhered": true,
+                "explanation": "Speaker B demonstrates respect (a key value) by honoring their own boundaries and encouraging Speaker A to do the same. They also show empathy and consideration."
+              },
+              "truthful": {
+                "adhered": true,
+                "explanation": "Speaker B is honest about their own limitations and the reasons behind their inability to engage fully at that moment."
+              }
+            }
+          }
+        },
+        {
+          "speaker": "Speaker A",
+          "text": "I mean. I mean, I do get having a hard day. Obviously, I have a hard day, but I had one, too. But, like, I really want to talk. I really feel like I need to talk about it. Like, and you give such good advice, and, like, I feel like you just, like, help me see things clearly. So I just, like, I just really want to talk, you know?",
+          "fast": {
+            "score": 2,
+            "breakdown": {
+              "fair": {
+                "adhered": false,
+                "explanation": "Speaker A acknowledges Speaker B's hard day but quickly shifts back to their own needs without fully validating Speaker B's boundaries or perspective."
+              },
+              "apologies": {
+                "adhered": true,
+                "explanation": "No unnecessary apologies are given, and Speaker A is not apologizing for their own needs."
+              },
+              "stick_to_values": {
+                "adhered": false,
+                "explanation": "Speaker A does not fully respect Speaker B's boundaries or values by continuing to push for immediate attention despite Speaker B's clear limits."
+              },
+              "truthful": {
+                "adhered": true,
+                "explanation": "Speaker A is truthful about their feelings and their need to talk, though their tone and phrasing lack nuance."
+              }
+            }
+          }
+        },
+        {
+          "speaker": "Speaker B",
+          "text": "I know you want to talk. I hear it. I hear how important it is for you, and I just can't do it. You know how it is when we start having these conversations late at night, I then can't go to sleep, and then it just messes up my whole schedule. We can't have the conversation tonight.",
+          "fast": {
+            "score": 4,
+            "breakdown": {
+              "fair": {
+                "adhered": true,
+                "explanation": "Speaker B reaffirms their inability to engage while still acknowledging Speaker A's feelings, maintaining fairness by not dismissing Speaker A's needs entirely."
+              },
+              "apologies": {
+                "adhered": true,
+                "explanation": "No over-apologizing or unnecessary guilt is expressed; Speaker B clearly communicates their limits without over-apologizing."
+              },
+              "stick_to_values": {
+                "adhered": true,
+                "explanation": "Speaker B upholds their values by respecting their own boundaries and the importance of their schedule, while still showing empathy for Speaker A."
+              },
+              "truthful": {
+                "adhered": true,
+                "explanation": "Speaker B is honest about the consequences of their engagement and why they cannot accommodate Speaker A at that moment."
+              }
+            }
+          }
+        },
+        {
+          "speaker": "Speaker A",
+          "text": "So, like, you're shutting me down again.",
+          "fast": {
+            "score": 1,
+            "breakdown": {
+              "fair": {
+                "adhered": false,
+                "explanation": "The phrasing implies that Speaker B is intentionally rejecting Speaker A, which is unfair and dismissive of Speaker B's valid reasons for setting boundaries."
+              },
+              "apologies": {
+                "adhered": true,
+                "explanation": "No apologies are given, and none are needed here, so this adheres to the guideline."
+              },
+              "stick_to_values": {
+                "adhered": false,
+                "explanation": "Speaker A does not demonstrate respect or consideration for Speaker B's boundaries, undermining values like mutual respect."
+              },
+              "truthful": {
+                "adhered": false,
+                "explanation": "While the statement is factually true, the tone and phrasing are unconstructive and unfair, which undermines authenticity in communication."
+              }
+            }
+          }
+        },
+        {
+          "speaker": "Speaker B",
+          "text": "Kristen, I'm just saying, tonight I can. Is there something else that we can do? Like, is there another way that we can, like, make this work? Like, is there something that you can think of? You know, if I can't do it tonight, can we maybe do it the next day? I mean, what are your thoughts?",
+          "fast": {
+            "score": 4,
+            "breakdown": {
+              "fair": {
+                "adhered": true,
+                "explanation": "Speaker B offers an alternative solution and invites collaboration, showing fairness by considering Speaker A's needs while maintaining their own boundaries."
+              },
+              "apologies": {
+                "adhered": true,
+                "explanation": "No unnecessary apologies are given, and Speaker B remains firm in their boundaries while still being accommodating."
+              },
+              "stick_to_values": {
+                "adhered": true,
+                "explanation": "Speaker B demonstrates respect and problem-solving, adhering to values of collaboration and mutual support."
+              },
+              "truthful": {
+                "adhered": true,
+                "explanation": "Speaker B is honest about their availability and open about seeking a mutually agreeable solution."
+              }
+            }
+          }
+        },
+        {
+          "speaker": "Speaker A",
+          "text": "I mean, I guess tomorrow morning will be okay. I guess we could talk about it in the morning.",
+          "fast": {
+            "score": 3,
+            "breakdown": {
+              "fair": {
+                "adhered": true,
+                "explanation": "Speaker A agrees to a compromise, showing some consideration for Speaker B's boundaries."
+              },
+              "apologies": {
+                "adhered": true,
+                "explanation": "No unnecessary apologies are given, and Speaker A does not apologize for their own needs."
+              },
+              "stick_to_values": {
+                "adhered": false,
+                "explanation": "While Speaker A compromises, the phrasing ('I guess') still lacks enthusiasm or full engagement with the values of mutual respect and collaboration."
+              },
+              "truthful": {
+                "adhered": true,
+                "explanation": "Speaker A is truthful about their willingness to accommodate Speaker B's suggestion."
+              }
+            }
+          }
+        },
+        {
+          "speaker": "Speaker B",
+          "text": "Perfect. Trust me, it's going to be better. I'll be better able to listen to you. I'll be more attentive. You'll get your needs met if we do it tomorrow.",
+          "fast": {
+            "score": 4,
+            "breakdown": {
+              "fair": {
+                "adhered": true,
+                "explanation": "Speaker B reassures Speaker A while maintaining their own commitment to being attentive, showing fairness and consideration."
+              },
+              "apologies": {
+                "adhered": true,
+                "explanation": "No unnecessary apologies are given, and Speaker B remains confident in their ability to meet Speaker A's needs."
+              },
+              "stick_to_values": {
+                "adhered": true,
+                "explanation": "Speaker B upholds values of reliability, attentiveness, and mutual support."
+              },
+              "truthful": {
+                "adhered": true,
+                "explanation": "Speaker B is honest about their commitment to being more attentive and meeting Speaker A's needs."
+              }
+            }
+          }
+        },
+        {
+          "speaker": "Speaker A",
+          "text": "Okay. Okay. I can respect that. I can do that. Okay. Thank you. Go back to your book. Now we're good.",
+          "fast": {
+            "score": 3,
+            "breakdown": {
+              "fair": {
+                "adhered": true,
+                "explanation": "Speaker A acknowledges Speaker B's boundaries and agrees to the compromise, showing fairness and respect."
+              },
+              "apologies": {
+                "adhered": true,
+                "explanation": "No unnecessary apologies are given."
+              },
+              "stick_to_values": {
+                "adhered": false,
+                "explanation": "While Speaker A agrees to the plan, the phrase 'Go back to your book' could be perceived as dismissive or sarcastic, undermining values of mutual respect."
+              },
+              "truthful": {
+                "adhered": true,
+                "explanation": "Speaker A is truthful in expressing their agreement and respect for Speaker B's decision."
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "messages": [
+    {
+      "speaker": "Speaker A",
+      "text": "Christina. Oh, I had the worst day. Like, you won't believe what my boss did. I can't wait to tell you about this. You will not believe it. It's just horrendous. Like, she just doesn't respect me. She doesn't, like, listen to me. She pushes me too hard. Like, stop.",
+      "sentiment": {
+        "label": "negative",
+        "explanation": "The message contains strong expressions of frustration, anger, and dissatisfaction ('worst day,' 'horrendous,' 'doesn't respect me,' 'doesn't listen to me'). The speaker expresses a desire to vent about a negative experience."
+      },
+      "dear_man": {
+        "score": 0,
+        "breakdown": {
+          "describe": {
+            "adhered": false,
+            "explanation": "The speaker does not provide factual statements. Instead, they use emotional language ('worst day', 'horrendous') and vague descriptions without specifics."
+          },
+          "express": {
+            "adhered": true,
+            "explanation": "The speaker expresses feelings implicitly ('worst day', 'she doesn't respect me', 'she pushes me too hard'). However, they do not explicitly use 'I feel' or 'I felt'."
+          },
+          "assert": {
+            "adhered": false,
+            "explanation": "The speaker does not assert their needs using 'I want', 'I need', or similar phrases."
+          },
+          "reinforce": {
+            "adhered": false,
+            "explanation": "No reinforcement of a request with 'because', 'this would', or similar phrases."
+          },
+          "mindful": {
+            "adhered": false,
+            "explanation": "The speaker goes off-topic with tangents ('Like, stop') and excessive emotional venting."
+          },
+          "appear_confident": {
+            "adhered": false,
+            "explanation": "The speaker uses hedging ('like', 'you won't believe') and lacks directness."
+          },
+          "negotiate": {
+            "adhered": false,
+            "explanation": "No negotiation attempt is made."
+          }
+        }
+      },
+      "fast": {
+        "score": 1,
+        "breakdown": {
+          "fair": {
+            "adhered": false,
+            "explanation": "The speaker is venting about their boss but does not acknowledge any potential fairness in their boss's actions or their own role in the situation. The tone is overly dramatic and lacks consideration for the boss's perspective."
+          },
+          "apologies": {
+            "adhered": true,
+            "explanation": "No apologies are given, and none are needed in this context, so this adheres to the FAST guideline of avoiding unnecessary apologies."
+          },
+          "stick_to_values": {
+            "adhered": false,
+            "explanation": "The speaker does not demonstrate adherence to values like empathy, patience, or professionalism. They focus solely on their own frustration without considering the situation from another perspective."
+          },
+          "truthful": {
+            "adhered": true,
+            "explanation": "The speaker is truthful in expressing their feelings and experiences, though the tone and framing may lack nuance."
+          }
+        }
+      }
+    },
+    {
+      "speaker": "Speaker B",
+      "text": "Stop before you keep going. I see that this is really important to you, and you really want to talk about this right now. And I've had the most overwhelming day today at work, and as much as I wish I had the bandwidth for this right now, I don't. And I really want to support you. I know that this is really important for you to share. I just cannot do this. And I feel that if you can respect me in this decision, if you can respect where I'm coming from, I can be more attentive at a later time.",
+      "sentiment": {
+        "label": "neutral",
+        "explanation": "The message contains a mix of empathy ('I see that this is really important to you,' 'I really want to support you') and a firm boundary ('I just cannot do this'). The tone is measured and respectful, but the overall sentiment leans neutral due to the balance of supportive and limiting language."
+      },
+      "dear_man": {
+        "score": 1,
+        "breakdown": {
+          "describe": {
+            "adhered": false,
+            "explanation": "No factual description of the situation or needs."
+          },
+          "express": {
+            "adhered": true,
+            "explanation": "The speaker expresses feelings ('I've had the most overwhelming day', 'I really want to support you')."
+          },
+          "assert": {
+            "adhered": false,
+            "explanation": "No clear assertion of needs using 'I want', 'I need', etc."
+          },
+          "reinforce": {
+            "adhered": false,
+            "explanation": "No reinforcement of a request with 'because' or similar phrases."
+          },
+          "mindful": {
+            "adhered": false,
+            "explanation": "The speaker does not stay strictly on topic; they shift focus to their own day and bandwidth."
+          },
+          "appear_confident": {
+            "adhered": false,
+            "explanation": "The speaker uses hedging ('I just cannot do this') and is not assertive in their refusal."
+          },
+          "negotiate": {
+            "adhered": false,
+            "explanation": "No explicit negotiation attempt, though there is an implicit suggestion of a later time."
+          }
+        }
+      },
+      "fast": {
+        "score": 4,
+        "breakdown": {
+          "fair": {
+            "adhered": true,
+            "explanation": "Speaker B acknowledges the importance of the issue to Speaker A while also recognizing their own limitations. They do not blame Speaker A for their own constraints."
+          },
+          "apologies": {
+            "adhered": true,
+            "explanation": "Speaker B does not over-apologize or apologize for things outside their control. They clearly communicate their boundaries without unnecessary guilt."
+          },
+          "stick_to_values": {
+            "adhered": true,
+            "explanation": "Speaker B demonstrates respect (a key value) by honoring their own boundaries and encouraging Speaker A to do the same. They also show empathy and consideration."
+          },
+          "truthful": {
+            "adhered": true,
+            "explanation": "Speaker B is honest about their own limitations and the reasons behind their inability to engage fully at that moment."
+          }
+        }
+      }
+    },
+    {
+      "speaker": "Speaker A",
+      "text": "I mean. I mean, I do get having a hard day. Obviously, I have a hard day, but I had one, too. But, like, I really want to talk. I really feel like I need to talk about it. Like, and you give such good advice, and, like, I feel like you just, like, help me see things clearly. So I just, like, I just really want to talk, you know?",
+      "sentiment": {
+        "label": "positive",
+        "explanation": "The message expresses a desire for connection and appreciation ('you give such good advice,' 'help me see things clearly'). While the speaker acknowledges their own struggles, the overall sentiment is positive due to the emphasis on wanting to talk and feeling supported."
+      },
+      "dear_man": {
+        "score": 1,
+        "breakdown": {
+          "describe": {
+            "adhered": false,
+            "explanation": "No factual description of the situation or needs."
+          },
+          "express": {
+            "adhered": true,
+            "explanation": "The speaker expresses feelings ('I really feel like I need to talk', 'I feel like you help me see things clearly')."
+          },
+          "assert": {
+            "adhered": false,
+            "explanation": "The speaker does not assert needs using 'I want', 'I need' explicitly, though they imply it."
+          },
+          "reinforce": {
+            "adhered": false,
+            "explanation": "No reinforcement of a request with 'because' or similar phrases."
+          },
+          "mindful": {
+            "adhered": false,
+            "explanation": "The speaker goes off-topic with compliments ('you give such good advice') and tangents ('like, I just really want to talk')."
+          },
+          "appear_confident": {
+            "adhered": false,
+            "explanation": "The speaker uses hedging ('like', 'I mean') and lacks directness."
+          },
+          "negotiate": {
+            "adhered": false,
+            "explanation": "No negotiation attempt is made."
+          }
+        }
+      },
+      "fast": {
+        "score": 2,
+        "breakdown": {
+          "fair": {
+            "adhered": false,
+            "explanation": "Speaker A acknowledges Speaker B's hard day but quickly shifts back to their own needs without fully validating Speaker B's boundaries or perspective."
+          },
+          "apologies": {
+            "adhered": true,
+            "explanation": "No unnecessary apologies are given, and Speaker A is not apologizing for their own needs."
+          },
+          "stick_to_values": {
+            "adhered": false,
+            "explanation": "Speaker A does not fully respect Speaker B's boundaries or values by continuing to push for immediate attention despite Speaker B's clear limits."
+          },
+          "truthful": {
+            "adhered": true,
+            "explanation": "Speaker A is truthful about their feelings and their need to talk, though their tone and phrasing lack nuance."
+          }
+        }
+      }
+    },
+    {
+      "speaker": "Speaker B",
+      "text": "I know you want to talk. I hear it. I hear how important it is for you, and I just can't do it. You know how it is when we start having these conversations late at night, I then can't go to sleep, and then it just messes up my whole schedule. We can't have the conversation tonight.",
+      "sentiment": {
+        "label": "neutral",
+        "explanation": "The message conveys empathy ('I know you want to talk,' 'I hear it') but also a firm boundary ('I just can't do it'). The sentiment is neutral due to the balanced tone of understanding and limitation."
+      },
+      "dear_man": {
+        "score": 1,
+        "breakdown": {
+          "describe": {
+            "adhered": false,
+            "explanation": "No factual description of the situation or needs."
+          },
+          "express": {
+            "adhered": true,
+            "explanation": "The speaker expresses feelings ('I just can't do it') and acknowledges the importance of the conversation to the other speaker."
+          },
+          "assert": {
+            "adhered": false,
+            "explanation": "No clear assertion of needs using 'I want', 'I need', etc."
+          },
+          "reinforce": {
+            "adhered": false,
+            "explanation": "No reinforcement of a request with 'because' or similar phrases."
+          },
+          "mindful": {
+            "adhered": false,
+            "explanation": "The speaker shifts focus to their own schedule and sleep, which is tangential."
+          },
+          "appear_confident": {
+            "adhered": false,
+            "explanation": "The speaker uses a passive tone ('I just can't do it') and does not assert their boundary confidently."
+          },
+          "negotiate": {
+            "adhered": false,
+            "explanation": "No explicit negotiation attempt, though the refusal is stated."
+          }
+        }
+      },
+      "fast": {
+        "score": 4,
+        "breakdown": {
+          "fair": {
+            "adhered": true,
+            "explanation": "Speaker B reaffirms their inability to engage while still acknowledging Speaker A's feelings, maintaining fairness by not dismissing Speaker A's needs entirely."
+          },
+          "apologies": {
+            "adhered": true,
+            "explanation": "No over-apologizing or unnecessary guilt is expressed; Speaker B clearly communicates their limits without over-apologizing."
+          },
+          "stick_to_values": {
+            "adhered": true,
+            "explanation": "Speaker B upholds their values by respecting their own boundaries and the importance of their schedule, while still showing empathy for Speaker A."
+          },
+          "truthful": {
+            "adhered": true,
+            "explanation": "Speaker B is honest about the consequences of their engagement and why they cannot accommodate Speaker A at that moment."
+          }
+        }
+      }
+    },
+    {
+      "speaker": "Speaker A",
+      "text": "So, like, you're shutting me down again.",
+      "sentiment": {
+        "label": "negative",
+        "explanation": "The message is accusatory and conveys frustration ('shutting me down again'), indicating a negative sentiment."
+      },
+      "dear_man": {
+        "score": 0,
+        "breakdown": {
+          "describe": {
+            "adhered": false,
+            "explanation": "No factual description; it is an emotional accusation."
+          },
+          "express": {
+            "adhered": false,
+            "explanation": "No explicit expression of feelings using 'I feel' or similar phrases."
+          },
+          "assert": {
+            "adhered": false,
+            "explanation": "No assertion of needs."
+          },
+          "reinforce": {
+            "adhered": false,
+            "explanation": "No reinforcement of a request."
+          },
+          "mindful": {
+            "adhered": false,
+            "explanation": "The message is confrontational and off-topic."
+          },
+          "appear_confident": {
+            "adhered": false,
+            "explanation": "The speaker uses a hedging word ('like') and an accusatory tone."
+          },
+          "negotiate": {
+            "adhered": false,
+            "explanation": "No negotiation attempt."
+          }
+        }
+      },
+      "fast": {
+        "score": 1,
+        "breakdown": {
+          "fair": {
+            "adhered": false,
+            "explanation": "The phrasing implies that Speaker B is intentionally rejecting Speaker A, which is unfair and dismissive of Speaker B's valid reasons for setting boundaries."
+          },
+          "apologies": {
+            "adhered": true,
+            "explanation": "No apologies are given, and none are needed here, so this adheres to the guideline."
+          },
+          "stick_to_values": {
+            "adhered": false,
+            "explanation": "Speaker A does not demonstrate respect or consideration for Speaker B's boundaries, undermining values like mutual respect."
+          },
+          "truthful": {
+            "adhered": false,
+            "explanation": "While the statement is factually true, the tone and phrasing are unconstructive and unfair, which undermines authenticity in communication."
+          }
+        }
+      }
+    },
+    {
+      "speaker": "Speaker B",
+      "text": "Kristen, I'm just saying, tonight I can. Is there something else that we can do? Like, is there another way that we can, like, make this work? Like, is there something that you can think of? You know, if I can't do it tonight, can we maybe do it the next day? I mean, what are your thoughts?",
+      "sentiment": {
+        "label": "neutral",
+        "explanation": "The message is solution-oriented and shows a willingness to accommodate ('tonight I can,' 'can we do it the next day'). The tone is neutral, as it focuses on finding a compromise rather than expressing strong emotions."
+      },
+      "dear_man": {
+        "score": 3,
+        "breakdown": {
+          "describe": {
+            "adhered": false,
+            "explanation": "No factual description of the situation or needs."
+          },
+          "express": {
+            "adhered": false,
+            "explanation": "No explicit expression of feelings."
+          },
+          "assert": {
+            "adhered": false,
+            "explanation": "No clear assertion of needs using 'I want', 'I need', etc."
+          },
+          "reinforce": {
+            "adhered": false,
+            "explanation": "No reinforcement of a request with 'because' or similar phrases."
+          },
+          "mindful": {
+            "adhered": true,
+            "explanation": "The speaker stays on topic and focuses on finding a solution."
+          },
+          "appear_confident": {
+            "adhered": false,
+            "explanation": "The speaker uses hedging ('like', 'maybe') and lacks directness."
+          },
+          "negotiate": {
+            "adhered": true,
+            "explanation": "The speaker attempts negotiation with 'what if', 'can we', and 'what are your thoughts?'"
+          }
+        }
+      },
+      "fast": {
+        "score": 4,
+        "breakdown": {
+          "fair": {
+            "adhered": true,
+            "explanation": "Speaker B offers an alternative solution and invites collaboration, showing fairness by considering Speaker A's needs while maintaining their own boundaries."
+          },
+          "apologies": {
+            "adhered": true,
+            "explanation": "No unnecessary apologies are given, and Speaker B remains firm in their boundaries while still being accommodating."
+          },
+          "stick_to_values": {
+            "adhered": true,
+            "explanation": "Speaker B demonstrates respect and problem-solving, adhering to values of collaboration and mutual support."
+          },
+          "truthful": {
+            "adhered": true,
+            "explanation": "Speaker B is honest about their availability and open about seeking a mutually agreeable solution."
+          }
+        }
+      }
+    },
+    {
+      "speaker": "Speaker A",
+      "text": "I mean, I guess tomorrow morning will be okay. I guess we could talk about it in the morning.",
+      "sentiment": {
+        "label": "neutral",
+        "explanation": "The message is resigned and pragmatic ('I guess,' 'will be okay'), indicating a neutral sentiment with a hint of acceptance."
+      },
+      "dear_man": {
+        "score": 1,
+        "breakdown": {
+          "describe": {
+            "adhered": false,
+            "explanation": "No factual description of the situation or needs."
+          },
+          "express": {
+            "adhered": false,
+            "explanation": "No explicit expression of feelings."
+          },
+          "assert": {
+            "adhered": false,
+            "explanation": "No clear assertion of needs."
+          },
+          "reinforce": {
+            "adhered": false,
+            "explanation": "No reinforcement of a request."
+          },
+          "mindful": {
+            "adhered": true,
+            "explanation": "The speaker stays on topic and agrees to a solution."
+          },
+          "appear_confident": {
+            "adhered": false,
+            "explanation": "The speaker uses hedging ('I guess')."
+          },
+          "negotiate": {
+            "adhered": false,
+            "explanation": "No explicit negotiation attempt."
+          }
+        }
+      },
+      "fast": {
+        "score": 3,
+        "breakdown": {
+          "fair": {
+            "adhered": true,
+            "explanation": "Speaker A agrees to a compromise, showing some consideration for Speaker B's boundaries."
+          },
+          "apologies": {
+            "adhered": true,
+            "explanation": "No unnecessary apologies are given, and Speaker A does not apologize for their own needs."
+          },
+          "stick_to_values": {
+            "adhered": false,
+            "explanation": "While Speaker A compromises, the phrasing ('I guess') still lacks enthusiasm or full engagement with the values of mutual respect and collaboration."
+          },
+          "truthful": {
+            "adhered": true,
+            "explanation": "Speaker A is truthful about their willingness to accommodate Speaker B's suggestion."
+          }
+        }
+      }
+    },
+    {
+      "speaker": "Speaker B",
+      "text": "That would be great.",
+      "sentiment": {
+        "label": "positive",
+        "explanation": "The message is concise and affirmative ('Yeah, I have time,' 'We can do it over breakfast'), with a positive tone of agreement and willingness to accommodate."
+      },
+      "dear_man": {
+        "score": 0,
+        "breakdown": {
+          "describe": {
+            "adhered": false,
+            "explanation": "No factual description."
+          },
+          "express": {
+            "adhered": false,
+            "explanation": "No expression of feelings."
+          },
+          "assert": {
+            "adhered": false,
+            "explanation": "No assertion of needs."
+          },
+          "reinforce": {
+            "adhered": false,
+            "explanation": "No reinforcement of a request."
+          },
+          "mindful": {
+            "adhered": true,
+            "explanation": "The speaker stays on topic."
+          },
+          "appear_confident": {
+            "adhered": false,
+            "explanation": "The speaker is vague and lacks directness."
+          },
+          "negotiate": {
+            "adhered": false,
+            "explanation": "No negotiation attempt."
+          }
+        }
+      },
+      "fast": {
+        "score": 4,
+        "breakdown": {
+          "fair": {
+            "adhered": true,
+            "explanation": "Speaker B reassures Speaker A while maintaining their own commitment to being attentive, showing fairness and consideration."
+          },
+          "apologies": {
+            "adhered": true,
+            "explanation": "No unnecessary apologies are given, and Speaker B remains confident in their ability to meet Speaker A's needs."
+          },
+          "stick_to_values": {
+            "adhered": true,
+            "explanation": "Speaker B upholds values of reliability, attentiveness, and mutual support."
+          },
+          "truthful": {
+            "adhered": true,
+            "explanation": "Speaker B is honest about their commitment to being more attentive and meeting Speaker A's needs."
+          }
+        }
+      }
+    },
+    {
+      "speaker": "Speaker A",
+      "text": "You have time?",
+      "sentiment": {
+        "label": "positive",
+        "explanation": "The message shows understanding ('I get that you had a hard day') and appreciation ('that would mean a lot'). The overall sentiment is positive, reflecting acceptance and gratitude."
+      },
+      "dear_man": {
+        "score": 1,
+        "breakdown": {
+          "describe": {
+            "adhered": false,
+            "explanation": "No factual description."
+          },
+          "express": {
+            "adhered": false,
+            "explanation": "No explicit expression of feelings."
+          },
+          "assert": {
+            "adhered": false,
+            "explanation": "No assertion of needs."
+          },
+          "reinforce": {
+            "adhered": false,
+            "explanation": "No reinforcement of a request."
+          },
+          "mindful": {
+            "adhered": true,
+            "explanation": "The speaker stays on topic."
+          },
+          "appear_confident": {
+            "adhered": false,
+            "explanation": "The speaker uses hedging ('I mean') and is not assertive."
+          },
+          "negotiate": {
+            "adhered": false,
+            "explanation": "No negotiation attempt."
+          }
+        }
+      },
+      "fast": {
+        "score": 3,
+        "breakdown": {
+          "fair": {
+            "adhered": true,
+            "explanation": "Speaker A acknowledges Speaker B's boundaries and agrees to the compromise, showing fairness and respect."
+          },
+          "apologies": {
+            "adhered": true,
+            "explanation": "No unnecessary apologies are given."
+          },
+          "stick_to_values": {
+            "adhered": false,
+            "explanation": "While Speaker A agrees to the plan, the phrase 'Go back to your book' could be perceived as dismissive or sarcastic, undermining values of mutual respect."
+          },
+          "truthful": {
+            "adhered": true,
+            "explanation": "Speaker A is truthful in expressing their agreement and respect for Speaker B's decision."
+          }
+        }
+      }
+    },
+    {
+      "speaker": "Speaker B",
+      "text": "Yeah. Yeah, I have time. Yeah. We can do it over breakfast.",
+      "sentiment": {
+        "label": "positive",
+        "explanation": "The message is reassuring and optimistic ('Perfect,' 'it's going to be better,' 'I'll be more attentive'). The tone is positive, indicating confidence in the upcoming conversation."
+      },
+      "dear_man": {
+        "score": 2,
+        "breakdown": {
+          "describe": {
+            "adhered": false,
+            "explanation": "No factual description."
+          },
+          "express": {
+            "adhered": false,
+            "explanation": "No explicit expression of feelings."
+          },
+          "assert": {
+            "adhered": false,
+            "explanation": "No explicit assertion of needs using 'I want', 'I need', etc."
+          },
+          "reinforce": {
+            "adhered": true,
+            "explanation": "The speaker reinforces the request with 'because' implied ('it's going to be better' and 'you'll get your needs met')."
+          },
+          "mindful": {
+            "adhered": true,
+            "explanation": "The speaker stays on topic."
+          },
+          "appear_confident": {
+            "adhered": true,
+            "explanation": "The speaker appears confident and direct."
+          },
+          "negotiate": {
+            "adhered": false,
+            "explanation": "No negotiation attempt."
+          }
+        }
+      }
+    },
+    {
+      "speaker": "Speaker A",
+      "text": "Okay. Okay. I can do that. I can do that. I mean, I get. I get that you had a hard day. Yeah. That would mean a lot if we could talk about it at breakfast.",
+      "sentiment": {
+        "label": "positive",
+        "explanation": "The message conveys acceptance ('I can respect that'), gratitude ('Thank you'), and a sense of resolution ('Now we're good'). The overall sentiment is positive."
+      },
+      "dear_man": {
+        "score": 0,
+        "breakdown": {
+          "describe": {
+            "adhered": false,
+            "explanation": "No factual description."
+          },
+          "express": {
+            "adhered": false,
+            "explanation": "No explicit expression of feelings."
+          },
+          "assert": {
+            "adhered": false,
+            "explanation": "No assertion of needs."
+          },
+          "reinforce": {
+            "adhered": false,
+            "explanation": "No reinforcement of a request."
+          },
+          "mindful": {
+            "adhered": true,
+            "explanation": "The speaker stays on topic."
+          },
+          "appear_confident": {
+            "adhered": false,
+            "explanation": "The speaker is vague and lacks assertiveness."
+          },
+          "negotiate": {
+            "adhered": false,
+            "explanation": "No negotiation attempt."
+          }
+        }
+      }
+    },
+    {
+      "speaker": "Speaker B",
+      "text": "Perfect. Trust me, it's going to be better. I'll be better able to listen to you. I'll be more attentive. You'll get your. Your needs met if we do it tomorrow."
+    },
+    {
+      "speaker": "Speaker A",
+      "text": "Okay. Okay. I can respect that. I can do that. Okay. Thank you. Go back to your book. Now we're good."
+    }
+  ]
+}
