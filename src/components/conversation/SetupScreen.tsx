@@ -9,6 +9,8 @@ import { useSessionStore } from '@/store/session';
 interface SetupScreenProps {
   onCreateSession: (name: string, language: 'en' | 'es', settings: ConversationSettings) => void;
   onJoinSession: (code: string, name: string, language: 'en' | 'es') => void;
+  defaultName?: string;
+  onBackToDashboard?: () => void;
 }
 
 type Mode = 'landing' | 'choose-role' | 'templates' | 'create' | 'join';
@@ -18,11 +20,12 @@ const defaultSettings: ConversationSettings = {
   maxRounds: 0,
   enableVolumeAlerts: true,
   enableBreathingExercise: true,
+  conversationMode: 'rounds',
 };
 
-export function SetupScreen({ onCreateSession, onJoinSession }: SetupScreenProps) {
-  const [mode, setMode] = useState<Mode>('landing');
-  const [name, setName] = useState('');
+export function SetupScreen({ onCreateSession, onJoinSession, defaultName, onBackToDashboard }: SetupScreenProps) {
+  const [mode, setMode] = useState<Mode>(defaultName ? 'templates' : 'landing');
+  const [name, setName] = useState(defaultName || '');
   const [code, setCode] = useState('');
   const [language, setLanguage] = useState<'en' | 'es'>('en');
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -59,6 +62,7 @@ export function SetupScreen({ onCreateSession, onJoinSession }: SetupScreenProps
       maxRounds: 3, // Skill-based templates always have 3 rounds
       enableVolumeAlerts: true,
       enableBreathingExercise: true,
+      conversationMode: 'rounds',
     });
     setMode('create');
   };
@@ -76,6 +80,17 @@ export function SetupScreen({ onCreateSession, onJoinSession }: SetupScreenProps
         {/* Header */}
         <header className="p-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
+            {onBackToDashboard && (
+              <button
+                onClick={onBackToDashboard}
+                className="mr-2 p-1 rounded-lg hover:bg-[var(--color-calm-100)]"
+                style={{ color: 'var(--color-calm-500)' }}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+                </svg>
+              </button>
+            )}
             <div
               className="w-8 h-8 rounded-lg flex items-center justify-center"
               style={{ backgroundColor: 'var(--color-calm-700)' }}

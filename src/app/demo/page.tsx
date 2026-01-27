@@ -10,12 +10,13 @@ import { PreConversationSetup } from '@/components/conversation/PreConversationS
 import { ActiveConversation } from '@/components/conversation/ActiveConversation';
 import { SummaryScreen } from '@/components/conversation/SummaryScreen';
 import { BreathingExercise } from '@/components/breathing/BreathingExercise';
-import { PrivacyConsent, PrivacyPreferences } from '@/components/onboarding';
+import { PrivacyConsent, PrivacyPreferences, SignUpScreen } from '@/components/onboarding';
 import { MicrophonePermission } from '@/components/onboarding';
 import { SessionRecovery } from '@/components/conversation/SessionRecovery';
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
 import { SkillLearningModule } from '@/components/skill';
-import type { ConversationSettings } from '@/types';
+import { AdminDashboard } from '@/components/admin/AdminDashboard';
+import type { ConversationSettings, SkillBasedTemplate, UserProfile } from '@/types';
 
 // Demo access code - change this for your presentations
 const DEMO_ACCESS_CODE = 'MEDIATOR2025';
@@ -26,12 +27,15 @@ const STORAGE_KEYS = {
   SESSION_INFO: 'mediator_session_info',
   MIC_PERMISSION_ASKED: 'mediator_mic_permission_asked',
   DEMO_ACCESS: 'mediator_demo_access',
+  USER_PROFILE: 'mediator_user_profile',
 };
 
 // App state machine
 type AppState =
   | 'loading'
   | 'access-gate'
+  | 'signup'
+  | 'dashboard'
   | 'privacy-consent'
   | 'mic-permission'
   | 'session-recovery'
@@ -138,6 +142,8 @@ function DemoContent() {
   const [appState, setAppState] = useState<AppState>('loading');
   const [savedSession, setSavedSession] = useState<SavedSessionInfo | null>(null);
   const [privacyPreferences, setPrivacyPreferences] = useState<PrivacyPreferences | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [pendingTemplate, setPendingTemplate] = useState<SkillBasedTemplate | null>(null);
 
   const {
     phase,
@@ -176,42 +182,93 @@ function DemoContent() {
         return;
       }
 
-      // Check privacy preferences
-      const storedPrefs = localStorage.getItem(STORAGE_KEYS.PRIVACY_PREFERENCES);
-      if (!storedPrefs) {
-        setAppState('privacy-consent');
-        return;
-      }
-
-      const prefs = JSON.parse(storedPrefs) as PrivacyPreferences;
-      setPrivacyPreferences(prefs);
-
-      // Check if mic permission was asked (and if volume monitoring is enabled)
-      const micAsked = localStorage.getItem(STORAGE_KEYS.MIC_PERMISSION_ASKED);
-      if (!micAsked && prefs.allowVolumeMonitoring) {
-        setAppState('mic-permission');
-        return;
-      }
-
-      // Check for saved session (less than 24 hours old)
-      const storedSession = localStorage.getItem(STORAGE_KEYS.SESSION_INFO);
-      if (storedSession) {
-        const sessionInfo = JSON.parse(storedSession) as SavedSessionInfo;
-        const ageHours = (Date.now() - sessionInfo.savedAt) / (1000 * 60 * 60);
-        if (ageHours < 24) {
-          setSavedSession(sessionInfo);
-          setAppState('session-recovery');
+      // Load stored user profile
+      const storedProfile = localStorage.getItem(STORAGE_KEYS.USER_PROFILE);
+      if (storedProfile) {
+        try {
+          const profile = JSON.parse(storedProfile) as UserProfile;
+          setUserProfile(profile);
+          setAppState('dashboard');
           return;
-        } else {
-          localStorage.removeItem(STORAGE_KEYS.SESSION_INFO);
+        } catch {
+          localStorage.removeItem(STORAGE_KEYS.USER_PROFILE);
         }
       }
 
-      setAppState('main');
+      // No profile - need signup
+      setAppState('signup');
     };
 
     checkStoredState();
   }, []);
+
+  // Handle starting a conversation from dashboard
+  const handleStartConversationFromDashboard = (template?: SkillBasedTemplate) => {
+    if (template) {
+      setPendingTemplate(template);
+    }
+
+    // Check privacy preferences
+    const storedPrefs = localStorage.getItem(STORAGE_KEYS.PRIVACY_PREFERENCES);
+    if (!storedPrefs) {
+      setAppState('privacy-consent');
+      return;
+    }
+
+    const prefs = JSON.parse(storedPrefs) as PrivacyPreferences;
+    setPrivacyPreferences(prefs);
+
+    // Check if mic permission was asked
+    const micAsked = localStorage.getItem(STORAGE_KEYS.MIC_PERMISSION_ASKED);
+    if (!micAsked && prefs.allowVolumeMonitoring) {
+      setAppState('mic-permission');
+      return;
+    }
+
+    // Check for saved session
+    const storedSession = localStorage.getItem(STORAGE_KEYS.SESSION_INFO);
+    if (storedSession) {
+      const sessionInfo = JSON.parse(storedSession) as SavedSessionInfo;
+      const ageHours = (Date.now() - sessionInfo.savedAt) / (1000 * 60 * 60);
+      if (ageHours < 24) {
+        setSavedSession(sessionInfo);
+        setAppState('session-recovery');
+        return;
+      } else {
+        localStorage.removeItem(STORAGE_KEYS.SESSION_INFO);
+      }
+    }
+
+    // Apply pending template if any
+    if (template) {
+      storeSyncState({
+        selectedSkillTemplate: template,
+        skillLearningComplete: false,
+      });
+    }
+
+    setAppState('main');
+  };
+
+  const handleSignUpComplete = (profile: UserProfile) => {
+    setUserProfile(profile);
+    localStorage.setItem(STORAGE_KEYS.USER_PROFILE, JSON.stringify(profile));
+    setAppState('dashboard');
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem(STORAGE_KEYS.USER_PROFILE);
+    localStorage.removeItem(STORAGE_KEYS.DEMO_ACCESS);
+    localStorage.removeItem(STORAGE_KEYS.PRIVACY_PREFERENCES);
+    localStorage.removeItem(STORAGE_KEYS.MIC_PERMISSION_ASKED);
+    setUserProfile(null);
+    setAppState('access-gate');
+  };
+
+  const handleBackToDashboard = () => {
+    setPendingTemplate(null);
+    setAppState('dashboard');
+  };
 
   // Save session info when joining/creating
   useEffect(() => {
@@ -242,12 +299,20 @@ function DemoContent() {
 
   // Handlers
   const handleAccessGranted = () => {
-    const storedPrefs = localStorage.getItem(STORAGE_KEYS.PRIVACY_PREFERENCES);
-    if (!storedPrefs) {
-      setAppState('privacy-consent');
-    } else {
-      setAppState('main');
+    // Check if profile exists
+    const storedProfile = localStorage.getItem(STORAGE_KEYS.USER_PROFILE);
+    if (storedProfile) {
+      try {
+        const profile = JSON.parse(storedProfile) as UserProfile;
+        setUserProfile(profile);
+        setAppState('dashboard');
+        return;
+      } catch {
+        localStorage.removeItem(STORAGE_KEYS.USER_PROFILE);
+      }
     }
+    // Go to signup
+    setAppState('signup');
   };
 
   const handlePrivacyAccept = (prefs: PrivacyPreferences) => {
@@ -258,41 +323,38 @@ function DemoContent() {
       setAppState('mic-permission');
     } else {
       localStorage.setItem(STORAGE_KEYS.MIC_PERMISSION_ASKED, 'skipped');
+      // Apply pending template if any
+      if (pendingTemplate) {
+        storeSyncState({
+          selectedSkillTemplate: pendingTemplate,
+          skillLearningComplete: false,
+        });
+      }
       setAppState('main');
     }
   };
 
   const handleMicGranted = () => {
     localStorage.setItem(STORAGE_KEYS.MIC_PERMISSION_ASKED, 'granted');
-
-    const storedSession = localStorage.getItem(STORAGE_KEYS.SESSION_INFO);
-    if (storedSession) {
-      const sessionInfo = JSON.parse(storedSession) as SavedSessionInfo;
-      const ageHours = (Date.now() - sessionInfo.savedAt) / (1000 * 60 * 60);
-      if (ageHours < 24) {
-        setSavedSession(sessionInfo);
-        setAppState('session-recovery');
-        return;
-      }
+    // Apply pending template if any
+    if (pendingTemplate) {
+      storeSyncState({
+        selectedSkillTemplate: pendingTemplate,
+        skillLearningComplete: false,
+      });
     }
-
     setAppState('main');
   };
 
   const handleMicSkip = () => {
     localStorage.setItem(STORAGE_KEYS.MIC_PERMISSION_ASKED, 'denied');
-
-    const storedSession = localStorage.getItem(STORAGE_KEYS.SESSION_INFO);
-    if (storedSession) {
-      const sessionInfo = JSON.parse(storedSession) as SavedSessionInfo;
-      const ageHours = (Date.now() - sessionInfo.savedAt) / (1000 * 60 * 60);
-      if (ageHours < 24) {
-        setSavedSession(sessionInfo);
-        setAppState('session-recovery');
-        return;
-      }
+    // Apply pending template if any
+    if (pendingTemplate) {
+      storeSyncState({
+        selectedSkillTemplate: pendingTemplate,
+        skillLearningComplete: false,
+      });
     }
-
     setAppState('main');
   };
 
@@ -310,7 +372,12 @@ function DemoContent() {
   };
 
   const handleCreateSession = (name: string, language: 'en' | 'es', settings: ConversationSettings) => {
-    createSession(name, language, settings);
+    // Use profile's conversation mode preference
+    const enhancedSettings: ConversationSettings = {
+      ...settings,
+      conversationMode: userProfile?.preferences.conversationMode || 'rounds',
+    };
+    createSession(name, language, enhancedSettings);
   };
 
   const handleJoinSession = (code: string, name: string, language: 'en' | 'es') => {
@@ -376,6 +443,8 @@ function DemoContent() {
   const handleNewConversation = () => {
     localStorage.removeItem(STORAGE_KEYS.SESSION_INFO);
     useSessionStore.getState().resetSession();
+    setPendingTemplate(null);
+    setAppState('dashboard');
   };
 
   // Render based on app state
@@ -395,6 +464,28 @@ function DemoContent() {
 
   if (appState === 'access-gate') {
     return <AccessGate onAccessGranted={handleAccessGranted} />;
+  }
+
+  if (appState === 'signup') {
+    return (
+      <SignUpScreen
+        onComplete={handleSignUpComplete}
+        onBack={() => {
+          localStorage.removeItem(STORAGE_KEYS.DEMO_ACCESS);
+          setAppState('access-gate');
+        }}
+      />
+    );
+  }
+
+  if (appState === 'dashboard' && userProfile) {
+    return (
+      <AdminDashboard
+        userProfile={userProfile}
+        onStartConversation={handleStartConversationFromDashboard}
+        onLogout={handleLogout}
+      />
+    );
   }
 
   if (appState === 'privacy-consent') {
@@ -429,6 +520,8 @@ function DemoContent() {
           <SetupScreen
             onCreateSession={handleCreateSession}
             onJoinSession={handleJoinSession}
+            defaultName={userProfile?.name || undefined}
+            onBackToDashboard={handleBackToDashboard}
           />
         );
 

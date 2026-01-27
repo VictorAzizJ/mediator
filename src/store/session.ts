@@ -14,6 +14,7 @@ import type {
   PauseReason,
   ConversationSettings,
   ObserverSettings,
+  ConversationMode,
 } from '@/types';
 
 const defaultSettings: ConversationSettings = {
@@ -21,6 +22,7 @@ const defaultSettings: ConversationSettings = {
   maxRounds: 0, // 0 = unlimited
   enableVolumeAlerts: true,
   enableBreathingExercise: true,
+  conversationMode: 'rounds',
 };
 
 const defaultObserverSettings: ObserverSettings = {

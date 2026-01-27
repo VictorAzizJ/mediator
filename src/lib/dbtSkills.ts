@@ -250,6 +250,38 @@ export const skillBasedTemplates: SkillBasedTemplate[] = [
     ],
     tags: ['ethics', 'values', 'pushback', 'integrity'],
   },
+
+  // DEAR MAN - Technical to Non-Technical Team Meeting (Demo Proof of Concept)
+  {
+    id: 'dear-man-tech-nontech',
+    name: 'Technical to Non-Technical Team Meeting',
+    description:
+      'Bridge the communication gap between technical and non-technical stakeholders. Practice explaining complex concepts clearly, advocating for technical needs, and finding common ground. Ideal for engineers presenting to leadership, product meetings, or cross-functional collaboration.',
+    skill: 'DEAR MAN',
+    category: 'feedback',
+    estimatedDuration: 15,
+    turnDuration: 90,
+    maxRounds: 3,
+    skillSummary: dbtSkillInfo['DEAR MAN'].summary,
+    rounds: [
+      {
+        phase: 'setup',
+        prompt: 'Describe the technical situation in plain terms. What\'s the core issue or need?',
+        coachingNote: 'Avoid jargon. Imagine explaining to a smart person outside your field. Focus on impact, not implementation.',
+      },
+      {
+        phase: 'practice',
+        prompt: 'Express why this matters to the business. Make your request. Explain the value clearly.',
+        coachingNote: 'Connect technical work to business outcomes: time, money, risk, opportunity. Be specific about what you need.',
+      },
+      {
+        phase: 'reflect',
+        prompt: 'Did they understand? Where could you simplify further? What questions came up?',
+        coachingNote: 'Good technical communication is a negotiation. Be willing to adjust scope or timeline while staying true to technical constraints.',
+      },
+    ],
+    tags: ['technical', 'communication', 'cross-functional', 'stakeholder', 'demo', 'proof-of-concept'],
+  },
 ];
 
 // ============================================

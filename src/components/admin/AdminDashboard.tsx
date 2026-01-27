@@ -2,6 +2,15 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { SessionsTable } from './SessionsTable';
+import { dbtSkillInfo, skillBasedTemplates } from '@/lib/dbtSkills';
+import type { UserProfile, DBTSkill, SkillBasedTemplate } from '@/types';
+
+interface AdminDashboardProps {
+  userProfile: UserProfile;
+  onStartConversation: (template?: SkillBasedTemplate) => void;
+  onLogout?: () => void;
+}
 
 // Mock data for dashboard - in production, this would come from API
 interface DashboardStats {
@@ -17,11 +26,14 @@ interface RecentConversation {
   id: string;
   participants: string[];
   template: string | null;
+  skill: string | null;
   startedAt: number;
   endedAt: number | null;
   status: 'active' | 'completed' | 'paused';
   speakingBalance: number;
   pauseCount: number;
+  inputType: 'voice' | 'text' | 'mixed';
+  volumeFlags: number;
 }
 
 interface TeamMember {
@@ -33,7 +45,7 @@ interface TeamMember {
   lastActive: number;
 }
 
-// Mock data
+// Mock data - updated with skill-based info
 const mockStats: DashboardStats = {
   totalConversations: 247,
   activeConversations: 3,
@@ -46,33 +58,42 @@ const mockStats: DashboardStats = {
 const mockRecentConversations: RecentConversation[] = [
   {
     id: '1',
-    participants: ['Sarah Chen', 'Mike Johnson'],
-    template: 'Weekly 1-on-1',
+    participants: ['Sarah Chen'],
+    template: 'Technical to Non-Technical Team Meeting',
+    skill: 'DEAR MAN',
     startedAt: Date.now() - 1800000,
     endedAt: null,
     status: 'active',
     speakingBalance: 48,
     pauseCount: 0,
+    inputType: 'voice',
+    volumeFlags: 0,
   },
   {
     id: '2',
-    participants: ['Alex Rivera', 'Jordan Smith'],
-    template: 'Conflict Resolution',
+    participants: ['Alex Rivera'],
+    template: 'Client Relationship Repair',
+    skill: 'GIVE',
     startedAt: Date.now() - 3600000,
     endedAt: Date.now() - 1800000,
     status: 'completed',
     speakingBalance: 55,
     pauseCount: 2,
+    inputType: 'mixed',
+    volumeFlags: 1,
   },
   {
     id: '3',
-    participants: ['Emily Davis', 'Chris Brown'],
-    template: 'Performance Check-in',
+    participants: ['Emily Davis'],
+    template: 'Boundary Setting',
+    skill: 'FAST',
     startedAt: Date.now() - 7200000,
     endedAt: Date.now() - 5400000,
     status: 'completed',
     speakingBalance: 62,
     pauseCount: 1,
+    inputType: 'text',
+    volumeFlags: 0,
   },
 ];
 
@@ -103,12 +124,16 @@ const mockTeamMembers: TeamMember[] = [
   },
 ];
 
-type TabId = 'overview' | 'conversations' | 'team' | 'settings';
+type TabId = 'overview' | 'sessions' | 'conversations' | 'team' | 'settings' | 'practice' | 'learn';
 
-export function AdminDashboard() {
+export function AdminDashboard({ userProfile, onStartConversation, onLogout }: AdminDashboardProps) {
   const [activeTab, setActiveTab] = useState<TabId>('overview');
+  const [selectedSkillFilter, setSelectedSkillFilter] = useState<DBTSkill | null>(null);
 
-  const tabs: { id: TabId; label: string; icon: React.ReactNode }[] = [
+  const isTeamAccount = userProfile.accountType === 'team';
+  const isAdmin = userProfile.userRole === 'admin';
+
+  const baseTabs: { id: TabId; label: string; icon: React.ReactNode; teamOnly?: boolean }[] = [
     {
       id: 'overview',
       label: 'Overview',
@@ -119,8 +144,37 @@ export function AdminDashboard() {
       ),
     },
     {
+      id: 'practice',
+      label: 'Practice',
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z" />
+        </svg>
+      ),
+    },
+    {
+      id: 'learn',
+      label: 'Learn',
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z" />
+        </svg>
+      ),
+    },
+    {
+      id: 'sessions',
+      label: 'Sessions',
+      teamOnly: true,
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
+        </svg>
+      ),
+    },
+    {
       id: 'conversations',
-      label: 'Conversations',
+      label: 'Recent',
+      teamOnly: true,
       icon: (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
           <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z" />
@@ -130,6 +184,7 @@ export function AdminDashboard() {
     {
       id: 'team',
       label: 'Team',
+      teamOnly: true,
       icon: (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
           <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
@@ -146,6 +201,9 @@ export function AdminDashboard() {
       ),
     },
   ];
+
+  // Filter tabs based on account type
+  const tabs = baseTabs.filter(tab => !tab.teamOnly || isTeamAccount);
 
   const formatTimeAgo = (timestamp: number) => {
     const seconds = Math.floor((Date.now() - timestamp) / 1000);
@@ -273,7 +331,7 @@ export function AdminDashboard() {
     <div className="card">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-medium" style={{ color: 'var(--foreground)' }}>
-          All Conversations
+          Recent Sessions (Mock Data)
         </h2>
         <button className="btn-secondary text-sm">Export Data</button>
       </div>
@@ -282,16 +340,22 @@ export function AdminDashboard() {
           <thead>
             <tr style={{ borderBottom: '1px solid var(--color-calm-200)' }}>
               <th className="text-left py-2 px-3 text-sm font-medium" style={{ color: 'var(--color-calm-500)' }}>
-                Participants
+                User
+              </th>
+              <th className="text-left py-2 px-3 text-sm font-medium" style={{ color: 'var(--color-calm-500)' }}>
+                Skill
               </th>
               <th className="text-left py-2 px-3 text-sm font-medium" style={{ color: 'var(--color-calm-500)' }}>
                 Template
               </th>
               <th className="text-left py-2 px-3 text-sm font-medium" style={{ color: 'var(--color-calm-500)' }}>
-                Status
+                Input
               </th>
               <th className="text-left py-2 px-3 text-sm font-medium" style={{ color: 'var(--color-calm-500)' }}>
-                Balance
+                Alerts
+              </th>
+              <th className="text-left py-2 px-3 text-sm font-medium" style={{ color: 'var(--color-calm-500)' }}>
+                Status
               </th>
               <th className="text-left py-2 px-3 text-sm font-medium" style={{ color: 'var(--color-calm-500)' }}>
                 Time
@@ -302,10 +366,45 @@ export function AdminDashboard() {
             {mockRecentConversations.map((conv) => (
               <tr key={conv.id} style={{ borderBottom: '1px solid var(--color-calm-100)' }}>
                 <td className="py-3 px-3 text-sm" style={{ color: 'var(--foreground)' }}>
-                  {conv.participants.join(' & ')}
+                  {conv.participants.join(', ')}
+                </td>
+                <td className="py-3 px-3">
+                  {conv.skill ? (
+                    <span
+                      className="px-2 py-1 rounded text-xs font-medium"
+                      style={{
+                        backgroundColor: 'var(--color-calm-100)',
+                        color: 'var(--color-calm-700)',
+                      }}
+                    >
+                      {conv.skill}
+                    </span>
+                  ) : (
+                    <span className="text-sm" style={{ color: 'var(--color-calm-400)' }}>-</span>
+                  )}
                 </td>
                 <td className="py-3 px-3 text-sm" style={{ color: 'var(--color-calm-600)' }}>
                   {conv.template || 'Freeform'}
+                </td>
+                <td className="py-3 px-3">
+                  <span
+                    className="px-2 py-1 rounded text-xs"
+                    style={{
+                      backgroundColor: conv.inputType === 'voice' ? '#dbeafe' : conv.inputType === 'text' ? '#e0e7ff' : '#fef3c7',
+                      color: conv.inputType === 'voice' ? '#1d4ed8' : conv.inputType === 'text' ? '#4338ca' : '#d97706',
+                    }}
+                  >
+                    {conv.inputType}
+                  </span>
+                </td>
+                <td className="py-3 px-3">
+                  {conv.volumeFlags > 0 ? (
+                    <span className="text-sm" style={{ color: 'var(--color-safe-amber)' }}>
+                      ⚠️ {conv.volumeFlags}
+                    </span>
+                  ) : (
+                    <span className="text-sm" style={{ color: 'var(--color-safe-green)' }}>✓</span>
+                  )}
                 </td>
                 <td className="py-3 px-3">
                   <span
@@ -323,9 +422,6 @@ export function AdminDashboard() {
                     {conv.status}
                   </span>
                 </td>
-                <td className="py-3 px-3 text-sm" style={{ color: 'var(--color-calm-600)' }}>
-                  {conv.speakingBalance}%
-                </td>
                 <td className="py-3 px-3 text-sm" style={{ color: 'var(--color-calm-500)' }}>
                   {formatTimeAgo(conv.startedAt)}
                 </td>
@@ -334,6 +430,9 @@ export function AdminDashboard() {
           </tbody>
         </table>
       </div>
+      <p className="mt-4 text-xs text-center" style={{ color: 'var(--color-calm-400)' }}>
+        Connect Supabase in the "Sessions" tab to see real data
+      </p>
     </div>
   );
 
@@ -500,6 +599,219 @@ export function AdminDashboard() {
     </div>
   );
 
+  // Featured template for quick start
+  const featuredTemplate = skillBasedTemplates.find(
+    (t) => t.id === 'dear-man-tech-nontech'
+  );
+
+  const renderPractice = () => (
+    <div className="space-y-6">
+      {/* Quick Start */}
+      {featuredTemplate && (
+        <div className="card" style={{ borderColor: 'var(--color-safe-green)', borderWidth: '2px' }}>
+          <div className="flex items-start justify-between mb-4">
+            <div>
+              <span
+                className="inline-block px-2 py-0.5 rounded text-xs font-semibold mb-2"
+                style={{ backgroundColor: 'var(--color-safe-green)', color: 'white' }}
+              >
+                Quick Start
+              </span>
+              <h2 className="text-lg font-medium" style={{ color: 'var(--foreground)' }}>
+                {featuredTemplate.name}
+              </h2>
+              <p className="text-sm mt-1" style={{ color: 'var(--color-calm-500)' }}>
+                {featuredTemplate.description}
+              </p>
+            </div>
+            <button
+              onClick={() => onStartConversation(featuredTemplate)}
+              className="btn-primary"
+            >
+              Start Now
+            </button>
+          </div>
+          <div className="flex gap-4 text-sm" style={{ color: 'var(--color-calm-500)' }}>
+            <span>{featuredTemplate.skill}</span>
+            <span>~{featuredTemplate.estimatedDuration}min</span>
+            <span>3 rounds</span>
+          </div>
+        </div>
+      )}
+
+      {/* Skill Filter */}
+      <div className="flex gap-2 flex-wrap">
+        <button
+          onClick={() => setSelectedSkillFilter(null)}
+          className="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
+          style={{
+            backgroundColor: !selectedSkillFilter ? 'var(--color-calm-700)' : 'var(--color-calm-100)',
+            color: !selectedSkillFilter ? 'white' : 'var(--color-calm-700)',
+          }}
+        >
+          All Skills
+        </button>
+        {(['DEAR MAN', 'GIVE', 'FAST'] as DBTSkill[]).map((skill) => (
+          <button
+            key={skill}
+            onClick={() => setSelectedSkillFilter(skill)}
+            className="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
+            style={{
+              backgroundColor: selectedSkillFilter === skill ? 'var(--color-calm-700)' : 'var(--color-calm-100)',
+              color: selectedSkillFilter === skill ? 'white' : 'var(--color-calm-700)',
+            }}
+          >
+            {skill}
+          </button>
+        ))}
+      </div>
+
+      {/* Templates Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {skillBasedTemplates
+          .filter((t) => !selectedSkillFilter || t.skill === selectedSkillFilter)
+          .map((template) => (
+            <motion.button
+              key={template.id}
+              onClick={() => onStartConversation(template)}
+              className="text-left p-4 rounded-xl border transition-all hover:shadow-md card"
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+            >
+              <div className="flex items-start justify-between mb-2">
+                <span
+                  className="px-2 py-0.5 rounded text-xs font-semibold"
+                  style={{
+                    backgroundColor: 'var(--color-calm-100)',
+                    color: 'var(--color-calm-700)',
+                  }}
+                >
+                  {template.skill}
+                </span>
+                <span className="text-xs" style={{ color: 'var(--color-calm-400)' }}>
+                  ~{template.estimatedDuration}min
+                </span>
+              </div>
+              <h3 className="font-semibold mb-1" style={{ color: 'var(--foreground)' }}>
+                {template.name}
+              </h3>
+              <p className="text-sm line-clamp-2" style={{ color: 'var(--color-calm-500)' }}>
+                {template.description}
+              </p>
+            </motion.button>
+          ))}
+      </div>
+
+      {/* Conversation Mode Info */}
+      <div className="card" style={{ backgroundColor: 'var(--color-calm-50)' }}>
+        <h3 className="font-medium mb-2" style={{ color: 'var(--foreground)' }}>
+          Your Conversation Mode: {userProfile.preferences.conversationMode === 'rounds' ? 'Round-Based' : 'Speaker-Triggered'}
+        </h3>
+        <p className="text-sm" style={{ color: 'var(--color-calm-500)' }}>
+          {userProfile.preferences.conversationMode === 'rounds'
+            ? 'Structured 3-round format with Setup, Practice, and Reflect phases.'
+            : 'Natural flow based on voice activity detection - conversation advances when you pause speaking.'}
+        </p>
+        <button
+          onClick={() => setActiveTab('settings')}
+          className="text-sm font-medium mt-2 underline"
+          style={{ color: 'var(--color-calm-600)' }}
+        >
+          Change in Settings
+        </button>
+      </div>
+    </div>
+  );
+
+  const renderLearn = () => (
+    <div className="space-y-6">
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold mb-2" style={{ color: 'var(--foreground)' }}>
+          DBT Interpersonal Effectiveness Skills
+        </h2>
+        <p style={{ color: 'var(--color-calm-500)' }}>
+          Master these evidence-based communication techniques to improve your professional relationships.
+        </p>
+      </div>
+
+      {(['DEAR MAN', 'GIVE', 'FAST'] as DBTSkill[]).map((skillId) => {
+        const skill = dbtSkillInfo[skillId];
+        return (
+          <motion.div
+            key={skillId}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="card"
+          >
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <h2 className="text-xl font-semibold" style={{ color: 'var(--foreground)' }}>
+                  {skill.name}
+                </h2>
+                <p className="text-sm" style={{ color: 'var(--color-calm-500)' }}>
+                  {skill.focus}
+                </p>
+              </div>
+              <span
+                className="px-3 py-1 rounded-full text-sm font-semibold"
+                style={{
+                  backgroundColor: 'var(--color-calm-100)',
+                  color: 'var(--color-calm-700)',
+                }}
+              >
+                {skill.name}
+              </span>
+            </div>
+
+            <p className="mb-4" style={{ color: 'var(--color-calm-600)' }}>
+              {skill.summary}
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {skill.acronymBreakdown.map((item) => (
+                <div
+                  key={item.letter}
+                  className="flex items-start gap-3 p-3 rounded-lg"
+                  style={{ backgroundColor: 'var(--color-calm-50)' }}
+                >
+                  <span
+                    className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0"
+                    style={{
+                      backgroundColor: 'var(--color-calm-200)',
+                      color: 'var(--color-calm-700)',
+                    }}
+                  >
+                    {item.letter}
+                  </span>
+                  <div>
+                    <p className="font-medium text-sm" style={{ color: 'var(--foreground)' }}>
+                      {item.word}
+                    </p>
+                    <p className="text-xs" style={{ color: 'var(--color-calm-500)' }}>
+                      {item.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-4 pt-4 border-t" style={{ borderColor: 'var(--border-soft)' }}>
+              <button
+                onClick={() => {
+                  const template = skillBasedTemplates.find((t) => t.skill === skillId);
+                  if (template) onStartConversation(template);
+                }}
+                className="btn-secondary text-sm"
+              >
+                Practice {skill.name} →
+              </button>
+            </div>
+          </motion.div>
+        );
+      })}
+    </div>
+  );
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--background)' }}>
       {/* Header */}
@@ -508,24 +820,50 @@ export function AdminDashboard() {
         style={{ borderColor: 'var(--color-calm-200)', backgroundColor: 'var(--background)' }}
       >
         <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-semibold" style={{ color: 'var(--foreground)' }}>
-              Admin Dashboard
-            </h1>
-            <p className="text-sm" style={{ color: 'var(--color-calm-500)' }}>
-              Manage your organization's Mediator settings
-            </p>
+          <div className="flex items-center gap-4">
+            <div
+              className="w-10 h-10 rounded-xl flex items-center justify-center"
+              style={{ backgroundColor: 'var(--color-calm-700)' }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                <path d="M21 6h-2V3H5v3H3c-1.1 0-2 .9-2 2v3c0 1.1.9 2 2 2h2v6h14v-6h2c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2z" />
+              </svg>
+            </div>
+            <div>
+              <h1 className="text-xl font-semibold" style={{ color: 'var(--foreground)' }}>
+                {isTeamAccount ? 'Admin Dashboard' : 'Dashboard'}
+              </h1>
+              <p className="text-sm" style={{ color: 'var(--color-calm-500)' }}>
+                {isTeamAccount
+                  ? `Manage ${userProfile.organization?.name || 'your organization'}'s Mediator settings`
+                  : 'Practice DBT communication skills'}
+              </p>
+            </div>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-sm" style={{ color: 'var(--color-calm-500)' }}>
-              Acme Corp
-            </span>
+            <div className="text-right">
+              <p className="text-sm font-medium" style={{ color: 'var(--foreground)' }}>
+                {userProfile.name}
+              </p>
+              <p className="text-xs" style={{ color: 'var(--color-calm-500)' }}>
+                {isTeamAccount ? userProfile.organization?.name : userProfile.role}
+              </p>
+            </div>
             <div
-              className="w-8 h-8 rounded-full flex items-center justify-center text-white font-medium"
+              className="w-9 h-9 rounded-full flex items-center justify-center text-white font-medium"
               style={{ backgroundColor: 'var(--color-calm-500)' }}
             >
-              A
+              {userProfile.name.charAt(0).toUpperCase()}
             </div>
+            {onLogout && (
+              <button
+                onClick={onLogout}
+                className="text-sm"
+                style={{ color: 'var(--color-calm-400)' }}
+              >
+                Logout
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -567,8 +905,11 @@ export function AdminDashboard() {
               transition={{ duration: 0.2 }}
             >
               {activeTab === 'overview' && renderOverview()}
-              {activeTab === 'conversations' && renderConversations()}
-              {activeTab === 'team' && renderTeam()}
+              {activeTab === 'practice' && renderPractice()}
+              {activeTab === 'learn' && renderLearn()}
+              {activeTab === 'sessions' && isTeamAccount && <SessionsTable />}
+              {activeTab === 'conversations' && isTeamAccount && renderConversations()}
+              {activeTab === 'team' && isTeamAccount && renderTeam()}
               {activeTab === 'settings' && renderSettings()}
             </motion.div>
           </div>

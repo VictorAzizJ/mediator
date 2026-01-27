@@ -131,6 +131,8 @@ export interface ConversationSettings {
   maxRounds: number;            // 0 = unlimited
   enableVolumeAlerts: boolean;  // Default: true
   enableBreathingExercise: boolean; // Default: true
+  conversationMode: ConversationMode; // 'rounds' or 'speaker-triggered'
+  speakerDetection?: SpeakerDetectionSettings; // Only used in speaker-triggered mode
 }
 
 export interface SpeakingTimeRecord {
@@ -446,4 +448,53 @@ export interface AuditLogEntry {
   actorRole: 'participant' | 'observer' | 'admin' | 'system';
   metadata?: Record<string, unknown>;
   ipAddress?: string;
+}
+
+// ============================================
+// USER PROFILE & ACCOUNT TYPES
+// ============================================
+
+export type AccountType = 'individual' | 'team';
+export type UserRole = 'admin' | 'manager' | 'member';
+
+export interface UserProfile {
+  id: string;
+  email: string;
+  name: string;
+  role: string; // Job title/role in organization
+  accountType: AccountType;
+  userRole: UserRole; // Permission level
+  organization?: {
+    id: string;
+    name: string;
+    domain?: string;
+  };
+  createdAt: number;
+  lastActiveAt: number;
+  preferences: {
+    defaultInputMode: 'voice' | 'text';
+    conversationMode: ConversationMode;
+    speakerDetectionSettings?: SpeakerDetectionSettings;
+    enableVolumeAlerts: boolean;
+    enableLiveSummary: boolean;
+    enableBreathingExercise: boolean;
+  };
+  stats: {
+    totalSessions: number;
+    totalRounds: number;
+    skillsUsed: Record<DBTSkill, number>;
+  };
+}
+
+// ============================================
+// CONVERSATION MODE TYPES
+// ============================================
+
+export type ConversationMode = 'rounds' | 'speaker-triggered';
+
+export interface SpeakerDetectionSettings {
+  silenceThresholdMs: number; // How long silence before switching (default: 2000ms)
+  minSpeakingDurationMs: number; // Minimum time before turn ends (default: 3000ms)
+  maxTurnDurationMs: number; // Max time for one turn (default: 180000ms / 3 min)
+  enableAutoPrompts: boolean; // Show coaching prompts based on speaking time
 }
