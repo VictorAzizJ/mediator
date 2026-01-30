@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useSessionStore } from '@/store/session';
 import { useVolumeMonitor } from '@/hooks/useVolumeMonitor';
-import { useSessionAnalytics } from '@/hooks/useSessionAnalytics';
+import { getSocket } from '@/lib/socket';
 import { Timer } from '@/components/ui/Timer';
 import { VolumeIndicator } from '@/components/ui/VolumeIndicator';
 import { ParticipantCard } from '@/components/ui/ParticipantCard';
@@ -13,7 +13,6 @@ import { PauseOverlay } from '@/components/ui/PauseOverlay';
 import { SpeakingTimeCompact } from '@/components/ui/SpeakingTimeBar';
 import { RoundPromptCompact } from '@/components/skill/RoundPromptDisplay';
 import { SkillReferenceCard } from '@/components/skill/SkillReferenceCard';
-import { LiveSummaryPanel } from '@/components/session/LiveSummaryPanel';
 
 interface ActiveConversationProps {
   currentUserId: string;
@@ -37,6 +36,7 @@ export function ActiveConversation({
   onEndConversation,
 }: ActiveConversationProps) {
   const {
+    sessionCode,
     participants,
     currentSpeakerId,
     turnTimeSeconds,
@@ -54,53 +54,281 @@ export function ActiveConversation({
   const currentRoundPrompt = selectedSkillTemplate?.rounds[roundNumber - 1] || null;
   const isSkillBased = !!selectedSkillTemplate;
 
-  // Session analytics tracking
+  // Track recorded audio chunks count and bytes sent
+  const [chunksRecorded, setChunksRecorded] = useState(0);
+  const [bytesSent, setBytesSent] = useState(0);
+  const [streamingStatus, setStreamingStatus] = useState<'idle' | 'streaming' | 'error'>('idle');
+  
+  // Track if we've set up socket listeners
+  const socketListenersSetup = useRef(false);
+
+  // ============================================================================
+  // BROADCAST CHANNEL: Turn-based recording leadership
+  // The current speaker's window becomes the recording leader
+  // ============================================================================
+  
+  // Unique ID for this window/tab - includes the user ID for turn-based coordination
+  const windowIdRef = useRef<string>(`window_${currentUserId}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
+  const broadcastChannelRef = useRef<BroadcastChannel | null>(null);
+  const [isRecordingLeader, setIsRecordingLeader] = useState(false);
+  
+  // Track if it's this user's turn to speak
+  const isMyTurn = currentSpeakerId === currentUserId;
+  
+  // Track the previous speaker to detect turn changes
+  const prevSpeakerIdRef = useRef<string | null>(null);
+
+  // Initialize broadcast channel for cross-tab coordination
+  useEffect(() => {
+    if (typeof window === 'undefined' || !sessionCode) return;
+
+    const channelName = `mediator_audio_${sessionCode}`;
+    const channel = new BroadcastChannel(channelName);
+    broadcastChannelRef.current = channel;
+
+    const windowId = windowIdRef.current;
+
+    // Handle messages from other tabs
+    channel.onmessage = (event) => {
+      const { type, speakerId, senderId } = event.data;
+
+      switch (type) {
+        case 'TURN_STARTED':
+          // Another user's turn started
+          if (speakerId !== currentUserId) {
+            // Not our turn, release leadership if we had it
+            if (isRecordingLeader) {
+              setIsRecordingLeader(false);
+              console.log(`Audio recording: Turn changed to ${speakerId}, releasing leadership`);
+            }
+          }
+          break;
+
+        case 'LEADER_CLAIMED':
+          // Another tab for the same user claimed leadership
+          if (speakerId === currentUserId && senderId !== windowId) {
+            // Another tab for our user claimed, we defer
+            setIsRecordingLeader(false);
+            console.log(`Audio recording: Another tab for user ${currentUserId} is recording`);
+          }
+          break;
+
+        case 'LEADER_RELEASED':
+          // A tab released leadership - only relevant if it's our turn
+          if (isMyTurn && !isRecordingLeader) {
+            // Claim leadership since it's our turn
+            claimLeadership();
+          }
+          break;
+      }
+    };
+
+    // Function to claim leadership
+    const claimLeadership = () => {
+      channel.postMessage({
+        type: 'LEADER_CLAIMED',
+        speakerId: currentUserId,
+        senderId: windowId,
+        timestamp: Date.now(),
+      });
+      setIsRecordingLeader(true);
+      console.log(`Audio recording: This tab is now recording for user ${currentUserId}`);
+    };
+
+    // Clean up on unmount
+    return () => {
+      if (isRecordingLeader) {
+        channel.postMessage({
+          type: 'LEADER_RELEASED',
+          speakerId: currentUserId,
+          senderId: windowId,
+          timestamp: Date.now(),
+        });
+      }
+      channel.close();
+      broadcastChannelRef.current = null;
+    };
+  }, [sessionCode, currentUserId, isRecordingLeader, isMyTurn]);
+
+  // Handle turn changes - claim or release leadership based on whose turn it is
+  useEffect(() => {
+    const channel = broadcastChannelRef.current;
+    if (!channel || phase !== 'active') return;
+
+    const turnChanged = prevSpeakerIdRef.current !== currentSpeakerId;
+    prevSpeakerIdRef.current = currentSpeakerId;
+
+    if (isMyTurn) {
+      // It's our turn - claim leadership if we don't have it
+      if (!isRecordingLeader) {
+        channel.postMessage({
+          type: 'TURN_STARTED',
+          speakerId: currentUserId,
+          senderId: windowIdRef.current,
+          timestamp: Date.now(),
+        });
+        
+        // Small delay to let other tabs release, then claim
+        setTimeout(() => {
+          channel.postMessage({
+            type: 'LEADER_CLAIMED',
+            speakerId: currentUserId,
+            senderId: windowIdRef.current,
+            timestamp: Date.now(),
+          });
+          setIsRecordingLeader(true);
+          console.log(`Audio recording: Turn started - this tab is now recording for ${currentUserId}`);
+        }, 50);
+      }
+    } else if (turnChanged && isRecordingLeader) {
+      // Turn changed and it's no longer our turn - release leadership
+      channel.postMessage({
+        type: 'LEADER_RELEASED',
+        speakerId: currentUserId,
+        senderId: windowIdRef.current,
+        timestamp: Date.now(),
+      });
+      setIsRecordingLeader(false);
+      console.log(`Audio recording: Turn ended - releasing leadership`);
+    }
+  }, [currentSpeakerId, currentUserId, isMyTurn, isRecordingLeader, phase]);
+
+  // Release leadership when conversation ends
+  useEffect(() => {
+    if ((phase === 'ended' || phase === 'summary') && isRecordingLeader) {
+      const channel = broadcastChannelRef.current;
+      if (channel) {
+        channel.postMessage({
+          type: 'LEADER_RELEASED',
+          speakerId: currentUserId,
+          senderId: windowIdRef.current,
+          timestamp: Date.now(),
+        });
+      }
+      setIsRecordingLeader(false);
+    }
+  }, [phase, isRecordingLeader, currentUserId]);
+
+  // Set up socket listeners for audio responses
+  useEffect(() => {
+    const socket = getSocket();
+    if (!socket || socketListenersSetup.current) return;
+
+    socket.on('audio:chunk:received', (data: { filename: string; bytesWritten: number; totalSize: number }) => {
+      setBytesSent(data.totalSize);
+      console.log(`Audio chunk confirmed: ${data.filename} (total: ${data.totalSize} bytes)`);
+    });
+
+    socket.on('audio:chunk:error', (data: { error: string }) => {
+      console.error('Audio streaming error:', data.error);
+      setStreamingStatus('error');
+    });
+
+    socket.on('audio:finalized', (data: { filename: string; path: string; size: number }) => {
+      console.log(`Audio recording finalized: ${data.path} (${data.size} bytes)`);
+    });
+
+    socketListenersSetup.current = true;
+
+    return () => {
+      socket.off('audio:chunk:received');
+      socket.off('audio:chunk:error');
+      socket.off('audio:finalized');
+      socketListenersSetup.current = false;
+    };
+  }, []);
+
+  // Handle audio chunk - send to server via socket (only if this tab is the leader)
+  const handleAudioChunk = useCallback(async (chunk: Blob) => {
+    // Always count chunks for UI display
+    setChunksRecorded((prev) => prev + 1);
+    
+    // Only send to server if this tab is the recording leader
+    if (!isRecordingLeader) {
+      console.log('Audio chunk recorded but not sent (another tab is the leader)');
+      return;
+    }
+    
+    const socket = getSocket();
+    if (!socket?.connected) {
+      console.warn('Socket not connected, cannot send audio chunk');
+      return;
+    }
+
+    try {
+      // Convert blob to base64 for transmission (browser-compatible)
+      const arrayBuffer = await chunk.arrayBuffer();
+      const uint8Array = new Uint8Array(arrayBuffer);
+      let binaryString = '';
+      for (let i = 0; i < uint8Array.length; i++) {
+        binaryString += String.fromCharCode(uint8Array[i]);
+      }
+      const base64Data = btoa(binaryString);
+
+      // Send audio chunk to server
+      socket.emit('audio:chunk', {
+        audioData: base64Data,
+        filename: `${sessionCode || 'recording'}.webm`,
+        mimeType: chunk.type,
+      });
+
+      setStreamingStatus('streaming');
+      console.log(`Audio chunk sent: ${chunk.size} bytes`);
+    } catch (err) {
+      console.error('Error sending audio chunk:', err);
+      setStreamingStatus('error');
+    }
+  }, [sessionCode, isRecordingLeader]);
+
+  // Initialize volume monitoring with audio recording
   const {
-    rounds: analyticsRounds,
-    currentRound: analyticsCurrentRound,
-    volumeFlags,
-    startRound,
-    endRound,
-    flagVolumeAlert,
-  } = useSessionAnalytics({
-    skillUsed: selectedSkillTemplate?.skill || null,
-    templateId: selectedSkillTemplate?.id,
-    templateName: selectedSkillTemplate?.name,
-    totalRounds: isSkillBased ? 3 : 0,
-  });
-
-  // Live summary panel state
-  const [showLiveSummary, setShowLiveSummary] = useState(true);
-
-  // Initialize volume monitoring
-  const { volumeLevel, isListening, startListening, error: micError } = useVolumeMonitor({
+    volumeLevel,
+    isListening,
+    isRecording,
+    startListening,
+    stopListening,
+    error: micError,
+  } = useVolumeMonitor({
     onHighVolume: (level) => {
-      // Auto-pause if volume stays high and flag the current round
+      // Auto-pause if volume stays high
       console.log('High volume detected:', level);
-      flagVolumeAlert();
       onRequestPause();
     },
     onVolumeChange: (level) => {
       // Update store with current volume
       syncState({ volumeLevel: level });
     },
+    onAudioChunk: handleAudioChunk,
+    recordingIntervalMs: 1000, // Record in 1 second chunks
   });
 
-  // Start round tracking when round changes
-  useEffect(() => {
-    if (roundNumber > 0 && phase === 'active' && roundNumber !== analyticsCurrentRound) {
-      const roundPhase = currentRoundPrompt?.phase || 'practice';
-      // Default to voice, can be updated when user selects input method
-      startRound(roundPhase, 'voice');
-    }
-  }, [roundNumber, phase, analyticsCurrentRound, currentRoundPrompt, startRound]);
-
-  // Start listening when conversation becomes active
+  // Start listening and recording when conversation becomes active
   useEffect(() => {
     if (phase === 'active' && !isListening) {
       startListening();
+      setStreamingStatus('idle');
+      setChunksRecorded(0);
+      setBytesSent(0);
     }
   }, [phase, isListening, startListening]);
+
+  // Finalize audio recording when conversation ends
+  useEffect(() => {
+    if (phase === 'ended' || phase === 'summary') {
+      if (isListening) {
+        stopListening();
+        
+        // Tell server to finalize the recording
+        const socket = getSocket();
+        if (socket?.connected && sessionCode) {
+          socket.emit('audio:finalize', { filename: `${sessionCode}.webm` });
+          console.log(`Audio recording finalized for session: ${sessionCode}`);
+        }
+        
+        setStreamingStatus('idle');
+      }
+    }
+  }, [phase, isListening, stopListening, sessionCode]);
 
   const [showExtendOption, setShowExtendOption] = useState(false);
   const currentParticipant = participants.find((p) => p.id === currentUserId);
@@ -143,6 +371,36 @@ export function ActiveConversation({
             currentUserId={currentUserId}
           />
           <div className="flex items-center gap-2">
+            {/* Recording & Streaming indicator - turn-based */}
+            {isRecording && (
+              <div className="flex items-center gap-1">
+                <span
+                  className={`w-2 h-2 rounded-full ${isRecordingLeader ? 'animate-pulse' : ''}`}
+                  style={{ 
+                    backgroundColor: !isRecordingLeader
+                      ? 'var(--color-calm-400)' // Gray when not your turn
+                      : streamingStatus === 'error' 
+                      ? 'var(--color-alert-red)' 
+                      : streamingStatus === 'streaming' 
+                      ? '#22c55e' 
+                      : '#f59e0b' // Orange/amber for recording but not yet streaming
+                  }}
+                />
+                <span className="text-xs" style={{ color: 'var(--color-calm-500)' }}>
+                  {isMyTurn 
+                    ? (isRecordingLeader 
+                      ? (streamingStatus === 'streaming' ? 'Your turn · Streaming' : 'Your turn · Recording')
+                      : 'Your turn')
+                    : 'Listening'}
+                </span>
+              </div>
+            )}
+            {/* Chunks count and bytes - only show for leader */}
+            {chunksRecorded > 0 && isRecordingLeader && (
+              <span className="text-xs" style={{ color: 'var(--color-calm-400)' }}>
+                {chunksRecorded}s {bytesSent > 0 && `(${Math.round(bytesSent / 1024)}KB)`}
+              </span>
+            )}
             {micError && (
               <span className="text-xs" style={{ color: 'var(--color-alert-red)' }}>
                 Mic unavailable
@@ -250,30 +508,32 @@ export function ActiveConversation({
 
       {/* Footer - always visible exit option */}
       <footer className="p-4 border-t" style={{ borderColor: 'var(--border-soft)' }}>
-        <button
-          onClick={onEndConversation}
-          className="w-full text-center py-2 text-sm hover:underline"
-          style={{ color: 'var(--color-calm-400)' }}
-        >
-          I need to stop this conversation
-        </button>
+        <div className="flex flex-col gap-2">
+          {/* Streaming status - show when it's your turn and streaming */}
+          {isRecordingLeader && chunksRecorded > 0 && bytesSent > 0 && (
+            <p className="text-center text-xs" style={{ color: 'var(--color-calm-500)' }}>
+              Your audio streaming to server ({Math.round(bytesSent / 1024)}KB saved)
+            </p>
+          )}
+          {/* Show message when listening (not your turn) */}
+          {isRecording && !isMyTurn && (
+            <p className="text-center text-xs" style={{ color: 'var(--color-calm-400)' }}>
+              Listening while other participant speaks
+            </p>
+          )}
+          <button
+            onClick={onEndConversation}
+            className="w-full text-center py-2 text-sm hover:underline"
+            style={{ color: 'var(--color-calm-400)' }}
+          >
+            I need to stop this conversation
+          </button>
+        </div>
       </footer>
 
       {/* Skill Reference Card (floating) */}
       {isSkillBased && selectedSkillTemplate && (
         <SkillReferenceCard skill={selectedSkillTemplate.skill} />
-      )}
-
-      {/* Live Summary Panel */}
-      {isSkillBased && (
-        <LiveSummaryPanel
-          skillUsed={selectedSkillTemplate?.skill || null}
-          totalRounds={3}
-          currentRound={roundNumber}
-          rounds={analyticsRounds}
-          isExpanded={showLiveSummary}
-          onToggle={() => setShowLiveSummary(!showLiveSummary)}
-        />
       )}
 
       {/* Pause overlay */}
