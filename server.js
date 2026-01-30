@@ -6,20 +6,6 @@ const { Server } = require('socket.io');
 const crypto = require('crypto');
 const { z } = require('zod');
 const Redis = require('ioredis');
-const fs = require('fs');
-const path = require('path');
-
-// ============================================================================
-// AUDIO RECORDING: Directory for storing audio files
-// ============================================================================
-
-const AUDIO_DIR = path.join(process.cwd(), 'audio_files');
-
-// Ensure audio directory exists
-if (!fs.existsSync(AUDIO_DIR)) {
-  fs.mkdirSync(AUDIO_DIR, { recursive: true });
-  console.log('Created audio_files directory');
-}
 
 // ============================================================================
 // AUDIT LOGGING: Track all significant actions for B2B compliance
@@ -1128,78 +1114,6 @@ io.on('connection', (socket) => {
     });
 
     console.log('Conversation ended:', currentSessionCode);
-  });
-
-  // ============================================================================
-  // AUDIO STREAMING: Receive and append audio chunks to file
-  // ============================================================================
-
-  // Receive audio chunk and append to session's audio file
-  socket.on('audio:chunk', async (data) => {
-    if (!currentSessionCode || !currentParticipantId) {
-      console.warn('audio:chunk received but no session/participant');
-      return;
-    }
-
-    try {
-      const { audioData, filename, mimeType } = data;
-
-      if (!audioData) {
-        console.warn('audio:chunk received with no audioData');
-        return;
-      }
-
-      // Create session-specific directory
-      const sessionDir = path.join(AUDIO_DIR, currentSessionCode);
-      if (!fs.existsSync(sessionDir)) {
-        fs.mkdirSync(sessionDir, { recursive: true });
-      }
-
-      // Use provided filename or default to session code
-      const audioFilename = filename || `${currentSessionCode}.webm`;
-      const audioPath = path.join(sessionDir, audioFilename);
-
-      // Convert base64 to buffer and append to file
-      const buffer = Buffer.from(audioData, 'base64');
-      fs.appendFileSync(audioPath, buffer);
-
-      console.log(`Audio chunk appended: ${audioPath} (+${buffer.length} bytes)`);
-
-      // Emit confirmation back to client
-      socket.emit('audio:chunk:received', {
-        filename: audioFilename,
-        bytesWritten: buffer.length,
-        totalSize: fs.statSync(audioPath).size,
-      });
-    } catch (err) {
-      console.error('Error saving audio chunk:', err);
-      socket.emit('audio:chunk:error', { error: err.message });
-    }
-  });
-
-  // Finalize audio recording (optional - can be used to process the final file)
-  socket.on('audio:finalize', async (data) => {
-    if (!currentSessionCode) return;
-
-    try {
-      const { filename } = data || {};
-      const audioFilename = filename || `${currentSessionCode}.webm`;
-      const sessionDir = path.join(AUDIO_DIR, currentSessionCode);
-      const audioPath = path.join(sessionDir, audioFilename);
-
-      if (fs.existsSync(audioPath)) {
-        const stats = fs.statSync(audioPath);
-        console.log(`Audio recording finalized: ${audioPath} (${stats.size} bytes)`);
-
-        socket.emit('audio:finalized', {
-          filename: audioFilename,
-          path: path.join('audio_files', currentSessionCode, audioFilename),
-          size: stats.size,
-        });
-      }
-    } catch (err) {
-      console.error('Error finalizing audio:', err);
-    }
   });
 
   // Handle disconnection
