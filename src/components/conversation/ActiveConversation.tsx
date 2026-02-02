@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { useSessionStore } from '@/store/session';
 import { useVolumeMonitor } from '@/hooks/useVolumeMonitor';
 import { useSessionAnalytics } from '@/hooks/useSessionAnalytics';
+import { useAI } from '@/hooks/useAI';
 import { Timer } from '@/components/ui/Timer';
 import { VolumeIndicator } from '@/components/ui/VolumeIndicator';
 import { ParticipantCard } from '@/components/ui/ParticipantCard';
@@ -72,6 +73,10 @@ export function ActiveConversation({
   // Live summary panel state
   const [showLiveSummary, setShowLiveSummary] = useState(true);
 
+  // AI hooks for trigger detection and reflection prompts
+  const { detectTriggers, generateReflectionPrompt } = useAI();
+  const [lastProcessedTranscriptLength, setLastProcessedTranscriptLength] = useState(0);
+
   // Initialize volume monitoring
   const { volumeLevel, isListening, startListening, error: micError } = useVolumeMonitor({
     onHighVolume: (level) => {
@@ -123,6 +128,72 @@ export function ActiveConversation({
   const handleTurnComplete = () => {
     onEndTurn();
   };
+
+  // Trigger detection when new transcript entries are added
+  useEffect(() => {
+    const checkForTriggers = async () => {
+      const { transcript, customTriggers, handleTriggerDetection } = useSessionStore.getState();
+
+      // Only process new entries
+      if (transcript.length <= lastProcessedTranscriptLength) return;
+
+      // Get new entries
+      const newEntries = transcript.slice(lastProcessedTranscriptLength);
+      setLastProcessedTranscriptLength(transcript.length);
+
+      // Check each new entry for triggers
+      for (const entry of newEntries) {
+        const triggerPhrases = customTriggers.map(t => t.phrase);
+        const detection = await detectTriggers(entry.text, triggerPhrases);
+
+        if (detection.detected && detection.severity !== 'low') {
+          handleTriggerDetection(detection);
+          break; // Only handle one trigger at a time
+        }
+      }
+    };
+
+    if (phase === 'active') {
+      checkForTriggers();
+    }
+  }, [phase, lastProcessedTranscriptLength, detectTriggers]);
+
+  // Generate reflection prompt when turn ends
+  useEffect(() => {
+    const generatePrompt = async () => {
+      if (phase !== 'reflection' || currentReflectionPrompt) return;
+
+      const { transcript } = useSessionStore.getState();
+      if (transcript.length === 0) return;
+
+      // Get the last few entries from the previous speaker
+      const previousSpeakerId = participants.find(p => p.id !== currentSpeakerId)?.id;
+      const previousSpeaker = participants.find(p => p.id === previousSpeakerId);
+      const currentSpeaker = participants.find(p => p.id === currentSpeakerId);
+
+      if (!previousSpeaker || !currentSpeaker) return;
+
+      // Get recent transcript from previous speaker
+      const recentEntries = transcript
+        .filter(e => e.participantId === previousSpeakerId)
+        .slice(-3);
+
+      if (recentEntries.length === 0) return;
+
+      const transcriptSegment = recentEntries.map(e => e.text).join(' ');
+
+      const prompt = await generateReflectionPrompt(
+        previousSpeaker.name,
+        currentSpeaker.name,
+        currentSpeaker.id,
+        transcriptSegment
+      );
+
+      syncState({ currentReflectionPrompt: prompt });
+    };
+
+    generatePrompt();
+  }, [phase, currentReflectionPrompt, currentSpeakerId, participants, generateReflectionPrompt, syncState]);
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: 'var(--background)' }}>

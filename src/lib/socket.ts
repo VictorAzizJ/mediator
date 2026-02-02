@@ -7,7 +7,7 @@ let socket: Socket | null = null;
 
 export interface SocketEvents {
   // Client -> Server
-  'session:create': (data: { hostName: string; language: string; settings?: ConversationSettings }) => void;
+  'session:create': (data: { hostName: string; language: string; settings?: ConversationSettings; soloMode?: boolean }) => void;
   'session:join': (data: { code: string; guestName: string; language: string }) => void;
   'session:reconnect': (data: { sessionCode: string; participantId: string }) => void;
   'session:sync': (data: Partial<SessionState>) => void;

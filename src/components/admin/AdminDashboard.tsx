@@ -768,9 +768,9 @@ export function AdminDashboard({ userProfile, onStartConversation, onLogout }: A
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {skill.acronymBreakdown.map((item) => (
+              {skill.acronymBreakdown.map((item, index) => (
                 <div
-                  key={item.letter}
+                  key={`${item.letter}-${index}`}
                   className="flex items-start gap-3 p-3 rounded-lg"
                   style={{ backgroundColor: 'var(--color-calm-50)' }}
                 >

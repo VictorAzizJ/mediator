@@ -29,7 +29,7 @@ export default function LandingPage() {
               <Link href="/demo" className="text-sm px-4 py-2 rounded-lg" style={{ color: 'var(--color-calm-600)' }}>
                 Sign In
               </Link>
-              <Link href="/demo" className="btn-primary text-sm">
+              <Link href="/demo?signup=true" className="btn-primary text-sm">
                 Try Free
               </Link>
             </div>
@@ -54,7 +54,7 @@ export default function LandingPage() {
               Turn workplace tension into team alignment.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link href="/demo" className="btn-primary px-8 py-3 text-lg">
+              <Link href="/demo?signup=true" className="btn-primary px-8 py-3 text-lg">
                 Start Free Session
               </Link>
               <button className="btn-secondary px-8 py-3 text-lg flex items-center gap-2">
@@ -219,7 +219,7 @@ export default function LandingPage() {
               <p className="text-lg mb-6" style={{ color: 'var(--color-calm-500)' }}>
                 Most managers avoid difficult conversations. Mediator gives you the structure to have them well—and build stronger relationships in the process.
               </p>
-              <Link href="/demo" className="btn-primary">
+              <Link href="/demo?signup=true" className="btn-primary">
                 Explore Manager Templates
               </Link>
             </div>
@@ -385,7 +385,7 @@ export default function LandingPage() {
             Join hundreds of teams having better conversations.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/demo" className="btn-primary px-8 py-3 text-lg">
+            <Link href="/demo?signup=true" className="btn-primary px-8 py-3 text-lg">
               Try Free Session
             </Link>
             <Link href="/demo" className="btn-secondary px-8 py-3 text-lg">

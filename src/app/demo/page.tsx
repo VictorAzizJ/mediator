@@ -1,9 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useSessionStore } from '@/store/session';
 import { useSocket } from '@/hooks/useSocket';
+import { useAI } from '@/hooks/useAI';
 import { SetupScreen } from '@/components/conversation/SetupScreen';
 import { WaitingScreen } from '@/components/conversation/WaitingScreen';
 import { PreConversationSetup } from '@/components/conversation/PreConversationSetup';
@@ -139,6 +141,7 @@ function AccessGate({ onAccessGranted }: { onAccessGranted: () => void }) {
 }
 
 function DemoContent() {
+  const searchParams = useSearchParams();
   const [appState, setAppState] = useState<AppState>('loading');
   const [savedSession, setSavedSession] = useState<SavedSessionInfo | null>(null);
   const [privacyPreferences, setPrivacyPreferences] = useState<PrivacyPreferences | null>(null);
@@ -172,9 +175,46 @@ function DemoContent() {
     reconnectSession,
   } = useSocket();
 
+  const { generateSummary } = useAI();
+
+  // Generate summary when conversation ends
+  useEffect(() => {
+    const generateConversationSummary = async () => {
+      if (phase === 'ended' && !summary && participants.length > 0) {
+        const { transcript, intentions } = useSessionStore.getState();
+        try {
+          const generatedSummary = await generateSummary(transcript, participants, intentions);
+          storeSyncState({ summary: generatedSummary, phase: 'summary' });
+        } catch (error) {
+          console.error('Failed to generate summary:', error);
+          // Still transition to summary phase even if generation fails
+          storeSyncState({ phase: 'summary' });
+        }
+      }
+    };
+
+    generateConversationSummary();
+  }, [phase, summary, participants, generateSummary, storeSyncState]);
+
   // Check stored state on mount
   useEffect(() => {
     const checkStoredState = () => {
+      // Check if signup=true param is present - force fresh signup flow
+      const forceSignup = searchParams.get('signup') === 'true';
+      if (forceSignup) {
+        // Clear ALL stored data to force complete fresh experience
+        localStorage.removeItem(STORAGE_KEYS.USER_PROFILE);
+        localStorage.removeItem(STORAGE_KEYS.PRIVACY_PREFERENCES);
+        localStorage.removeItem(STORAGE_KEYS.MIC_PERMISSION_ASKED);
+        localStorage.removeItem(STORAGE_KEYS.SESSION_INFO);
+        localStorage.removeItem(STORAGE_KEYS.DEMO_ACCESS); // Also clear access code
+        // Clear the URL param to avoid loops
+        window.history.replaceState({}, '', '/demo');
+        // Always start with access gate for fresh signup
+        setAppState('access-gate');
+        return;
+      }
+
       // Check demo access first
       const demoAccess = localStorage.getItem(STORAGE_KEYS.DEMO_ACCESS);
       if (demoAccess !== 'granted') {
@@ -200,7 +240,7 @@ function DemoContent() {
     };
 
     checkStoredState();
-  }, []);
+  }, [searchParams]);
 
   // Handle starting a conversation from dashboard
   const handleStartConversationFromDashboard = (template?: SkillBasedTemplate) => {
@@ -371,13 +411,13 @@ function DemoContent() {
     setAppState('main');
   };
 
-  const handleCreateSession = (name: string, language: 'en' | 'es', settings: ConversationSettings) => {
+  const handleCreateSession = (name: string, language: 'en' | 'es', settings: ConversationSettings, soloMode?: boolean) => {
     // Use profile's conversation mode preference
     const enhancedSettings: ConversationSettings = {
       ...settings,
       conversationMode: userProfile?.preferences.conversationMode || 'rounds',
     };
-    createSession(name, language, enhancedSettings);
+    createSession(name, language, enhancedSettings, soloMode);
   };
 
   const handleJoinSession = (code: string, name: string, language: 'en' | 'es') => {
@@ -638,7 +678,16 @@ function DemoContent() {
 export default function DemoPage() {
   return (
     <ErrorBoundary>
-      <DemoContent />
+      <Suspense fallback={
+        <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--background)' }}>
+          <div className="animate-pulse text-center">
+            <div className="w-12 h-12 rounded-xl mx-auto mb-4" style={{ backgroundColor: 'var(--color-calm-200)' }} />
+            <p style={{ color: 'var(--color-calm-400)' }}>Loading...</p>
+          </div>
+        </div>
+      }>
+        <DemoContent />
+      </Suspense>
     </ErrorBoundary>
   );
 }

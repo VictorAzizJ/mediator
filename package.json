@@ -12,7 +12,6 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.71.0",
     "@deepgram/sdk": "^4.11.3",
     "@ricky0123/vad-web": "^0.0.30",
     "@supabase/supabase-js": "^2.47.0",

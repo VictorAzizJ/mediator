@@ -1,11 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Anthropic from '@anthropic-ai/sdk';
+import { openrouter, isAIConfigured } from '@/lib/openrouter';
 import { generateReflectionPromptLocal } from '@/lib/ai';
 import { v4 as uuidv4 } from 'uuid';
-
-const anthropic = process.env.ANTHROPIC_API_KEY
-  ? new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
-  : null;
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,7 +15,7 @@ export async function POST(request: NextRequest) {
     }
 
     // If no API key, use local generation
-    if (!anthropic) {
+    if (!isAIConfigured()) {
       const localPrompt = generateReflectionPromptLocal(
         speakerName,
         listenerName,
@@ -32,14 +28,9 @@ export async function POST(request: NextRequest) {
     }
 
     try {
-      const response = await anthropic.messages.create({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 128,
-        system: `You are a compassionate conversation facilitator. Generate reflection prompts that invite curiosity and perspective-taking without taking sides or assuming wrongdoing.`,
-        messages: [
-          {
-            role: 'user',
-            content: `Based on this statement from ${speakerName}:
+      const systemPrompt = `You are a compassionate conversation facilitator. Generate reflection prompts that invite curiosity and perspective-taking without taking sides or assuming wrongdoing.`;
+
+      const userPrompt = `Based on this statement from ${speakerName}:
 
 "${transcriptSegment}"
 
@@ -49,34 +40,22 @@ Generate ONE reflection prompt for ${listenerName} that:
 - Uses "might" and "wonder" language (not definitive)
 - Is under 25 words
 
-Return ONLY the prompt text, no preamble or explanation.`,
-          },
-        ],
+Return ONLY the prompt text, no preamble or explanation.`;
+
+      const response = await openrouter.complete(systemPrompt, userPrompt, {
+        maxTokens: 128,
+        temperature: 0.7,
       });
 
-      const content = response.content[0];
-      if (content.type === 'text') {
-        return NextResponse.json({
-          id: uuidv4(),
-          text: content.text.trim().replace(/^["']|["']$/g, ''),
-          forParticipantId: listenerId || '',
-          inResponseTo: transcriptSegment.substring(0, 100),
-          dismissed: false,
-        });
-      }
-
-      // Fallback to local
-      const localPrompt = generateReflectionPromptLocal(
-        speakerName,
-        listenerName,
-        transcriptSegment
-      );
       return NextResponse.json({
-        ...localPrompt,
+        id: uuidv4(),
+        text: response.trim().replace(/^["']|["']$/g, ''),
         forParticipantId: listenerId || '',
+        inResponseTo: transcriptSegment.substring(0, 100),
+        dismissed: false,
       });
     } catch (apiError) {
-      console.error('Claude API error:', apiError);
+      console.error('OpenRouter API error:', apiError);
       const localPrompt = generateReflectionPromptLocal(
         speakerName,
         listenerName,

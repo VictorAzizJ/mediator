@@ -206,6 +206,7 @@ const SessionCreateSchema = z.object({
     .trim(),
   language: LanguageSchema,
   settings: ConversationSettingsSchema.optional(),
+  soloMode: z.boolean().optional(),
 });
 
 const SessionJoinSchema = z.object({
@@ -399,7 +400,7 @@ io.on('connection', (socket) => {
       return;
     }
 
-    const { hostName, language, settings: rawSettings } = validation.data;
+    const { hostName, language, settings: rawSettings, soloMode } = validation.data;
     const sessionCode = generateSessionCode();
     const sessionId = generateId();
     const participantId = generateId();
@@ -412,20 +413,36 @@ io.on('connection', (socket) => {
       enableBreathingExercise: rawSettings?.enableBreathingExercise ?? true,
     };
 
+    // Build participants array - add practice partner if solo mode
+    const participants = [
+      {
+        id: participantId,
+        name: hostName,
+        role: 'speaker',
+        isConnected: true,
+        language,
+        socketId: socket.id,
+      },
+    ];
+
+    // Add simulated practice partner for solo mode
+    if (soloMode) {
+      participants.push({
+        id: generateId(),
+        name: 'Practice Partner',
+        role: 'listener',
+        isConnected: true,
+        language,
+        socketId: null, // No real socket - simulated
+        isSimulated: true,
+      });
+    }
+
     const session = {
       sessionId,
       sessionCode,
-      phase: 'connecting',
-      participants: [
-        {
-          id: participantId,
-          name: hostName,
-          role: 'speaker',
-          isConnected: true,
-          language,
-          socketId: socket.id,
-        },
-      ],
+      phase: soloMode ? 'pre-conversation' : 'connecting',
+      participants,
       observers: [],
       observerSettings: {
         canViewTranscript: true,

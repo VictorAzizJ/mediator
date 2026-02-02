@@ -1,11 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Anthropic from '@anthropic-ai/sdk';
+import { openrouter, isAIConfigured } from '@/lib/openrouter';
 import { detectTriggersLocal } from '@/lib/ai';
 import type { TriggerDetection } from '@/types';
-
-const anthropic = process.env.ANTHROPIC_API_KEY
-  ? new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
-  : null;
 
 export async function POST(request: NextRequest) {
   try {
@@ -27,24 +23,19 @@ export async function POST(request: NextRequest) {
     }
 
     // If no API key, return local result
-    if (!anthropic) {
+    if (!isAIConfigured()) {
       return NextResponse.json(localResult);
     }
 
-    // For nuanced detection, use Claude
+    // For nuanced detection, use AI
     try {
       const customTriggersList = customTriggers.length > 0
         ? `\n\nCustom triggers to watch for: ${customTriggers.join(', ')}`
         : '';
 
-      const response = await anthropic.messages.create({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 256,
-        system: `You are analyzing conversation text for communication patterns that may escalate conflict. Be sensitive but not over-reactive. Only flag genuinely harmful patterns, not normal emotional expression.`,
-        messages: [
-          {
-            role: 'user',
-            content: `Analyze this statement for communication patterns that may escalate conflict:
+      const systemPrompt = `You are analyzing conversation text for communication patterns that may escalate conflict. Be sensitive but not over-reactive. Only flag genuinely harmful patterns, not normal emotional expression.`;
+
+      const userPrompt = `Analyze this statement for communication patterns that may escalate conflict:
 
 "${text}"
 
@@ -55,36 +46,40 @@ Check for:
 4. Stonewalling signals ("I'm done," "there's no point")
 5. Catastrophizing ("nothing ever changes")${customTriggersList}
 
-Respond with JSON only:
+Respond with JSON only (no markdown code blocks):
 {
   "detected": boolean,
   "patternType": string | null,
   "severity": "low" | "medium" | "high",
   "suggestedIntervention": string (2 sentences max, warm tone, or empty if not detected)
-}`,
-          },
-        ],
+}`;
+
+      const response = await openrouter.complete(systemPrompt, userPrompt, {
+        maxTokens: 256,
+        temperature: 0.3,
       });
 
-      // Parse Claude's response
-      const content = response.content[0];
-      if (content.type === 'text') {
-        try {
-          const parsed = JSON.parse(content.text) as Omit<TriggerDetection, 'originalText'>;
-          return NextResponse.json({
-            ...parsed,
-            originalText: text,
-          });
-        } catch {
-          // If parsing fails, return local result
-          return NextResponse.json(localResult);
+      // Parse AI response
+      try {
+        // Handle potential markdown code blocks
+        let jsonText = response;
+        const jsonMatch = jsonText.match(/```(?:json)?\s*([\s\S]*?)```/);
+        if (jsonMatch) {
+          jsonText = jsonMatch[1];
         }
-      }
 
-      return NextResponse.json(localResult);
+        const parsed = JSON.parse(jsonText.trim()) as Omit<TriggerDetection, 'originalText'>;
+        return NextResponse.json({
+          ...parsed,
+          originalText: text,
+        });
+      } catch {
+        // If parsing fails, return local result
+        return NextResponse.json(localResult);
+      }
     } catch (apiError) {
       // If API call fails, fall back to local result
-      console.error('Claude API error:', apiError);
+      console.error('OpenRouter API error:', apiError);
       return NextResponse.json(localResult);
     }
   } catch (error) {

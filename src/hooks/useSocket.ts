@@ -7,7 +7,7 @@ import type { SessionState, Participant, ConversationSettings } from '@/types';
 
 interface UseSocketReturn {
   isConnected: boolean;
-  createSession: (hostName: string, language: 'en' | 'es', settings: ConversationSettings) => void;
+  createSession: (hostName: string, language: 'en' | 'es', settings: ConversationSettings, soloMode?: boolean) => void;
   joinSession: (code: string, guestName: string, language: 'en' | 'es') => void;
   joinAsObserver: (code: string, observerName: string) => void;
   reconnectSession: (sessionCode: string, participantId: string) => void;
@@ -189,8 +189,8 @@ export function useSocket(): UseSocketReturn {
     };
   }, [storeSyncState]);
 
-  const createSession = useCallback((hostName: string, language: 'en' | 'es', settings: ConversationSettings) => {
-    emitEvent('session:create', { hostName, language, settings });
+  const createSession = useCallback((hostName: string, language: 'en' | 'es', settings: ConversationSettings, soloMode?: boolean) => {
+    emitEvent('session:create', { hostName, language, settings, soloMode });
   }, []);
 
   const joinSession = useCallback((code: string, guestName: string, language: 'en' | 'es') => {

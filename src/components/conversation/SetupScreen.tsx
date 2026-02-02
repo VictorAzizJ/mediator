@@ -7,7 +7,7 @@ import { SkillTemplateSelector } from '@/components/templates/SkillTemplateSelec
 import { useSessionStore } from '@/store/session';
 
 interface SetupScreenProps {
-  onCreateSession: (name: string, language: 'en' | 'es', settings: ConversationSettings) => void;
+  onCreateSession: (name: string, language: 'en' | 'es', settings: ConversationSettings, soloMode?: boolean) => void;
   onJoinSession: (code: string, name: string, language: 'en' | 'es') => void;
   defaultName?: string;
   onBackToDashboard?: () => void;
@@ -125,7 +125,7 @@ export function SetupScreen({ onCreateSession, onJoinSession, defaultName, onBac
             </p>
 
             {/* Main actions */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
               <button
                 onClick={() => setMode('templates')}
                 className="btn-primary px-8 py-3 text-lg"
@@ -137,6 +137,24 @@ export function SetupScreen({ onCreateSession, onJoinSession, defaultName, onBac
                 className="btn-secondary px-8 py-3 text-lg"
               >
                 Join with Code
+              </button>
+            </div>
+
+            {/* Solo Practice - for testing */}
+            <div className="mb-12">
+              <button
+                onClick={() => {
+                  const testName = defaultName || 'Tester';
+                  onCreateSession(testName, 'en', defaultSettings, true);
+                }}
+                className="text-sm px-4 py-2 rounded-lg border"
+                style={{
+                  color: 'var(--color-calm-500)',
+                  borderColor: 'var(--color-calm-200)',
+                  backgroundColor: 'var(--color-calm-50)'
+                }}
+              >
+                Solo Practice Mode (for testing)
               </button>
             </div>
 
