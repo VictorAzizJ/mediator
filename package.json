@@ -14,7 +14,7 @@
   "dependencies": {
     "@deepgram/sdk": "^4.11.3",
     "@ricky0123/vad-web": "^0.0.30",
-    "@supabase/supabase-js": "^2.47.0",
+    "@supabase/supabase-js": "^2.92.0",
     "express-rate-limit": "^8.2.1",
     "framer-motion": "^12.23.25",
     "ioredis": "^5.8.2",
