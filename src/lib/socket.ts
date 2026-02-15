@@ -22,6 +22,9 @@ export interface SocketEvents {
   'breathing:complete': () => void;
   'reflection:dismiss': () => void;
   'conversation:end': () => void;
+  // Audio streaming
+  'audio:chunk': (data: { audioData: string; filename?: string; mimeType?: string }) => void;
+  'audio:finalize': (data?: { filename?: string }) => void;
 
   // Server -> Client
   'session:created': (data: { sessionId: string; sessionCode: string; participantId: string }) => void;
@@ -34,6 +37,10 @@ export interface SocketEvents {
   'participant:connected': (data: { participantId: string; name: string }) => void;
   'participant:disconnected': (participantId: string) => void;
   'participant:reconnected': (participantId: string) => void;
+  // Audio streaming responses
+  'audio:chunk:received': (data: { filename: string; bytesWritten: number; totalSize: number }) => void;
+  'audio:chunk:error': (data: { error: string }) => void;
+  'audio:finalized': (data: { filename: string; path: string; size: number }) => void;
 }
 
 export function getSocket(): Socket | null {
